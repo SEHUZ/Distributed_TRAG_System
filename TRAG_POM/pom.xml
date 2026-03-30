@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.mycompany</groupId>
+    <artifactId>TRAG_POM</artifactId>
+    <version>1.0</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>AdministradorClientes_TRAG</module>
+        <module>AdministradorAutomoviles_TRAG</module>
+        <module>AdministradorServicios_TRAG</module>
+        <module>AdministradorInsumos_TRAG</module>
+        <module>AdministradorCotizaciones_TRAG</module>
+        <module>Presentacion_TRAG</module>
+        <module>Persistencia_TRAG</module>
+        <module>ExcepcionesNegocio_TRAG</module>
+        <module>Pruebas_TRAG</module>
+        <module>Negocios_TRAG</module>
+        <module>DTONegocios_TRAG</module>
+        <module>Mapeadores_TRAG</module>
+        <module>AdministradorOrdenesTrabajo_TRAG</module>
+    </modules>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+</project>
