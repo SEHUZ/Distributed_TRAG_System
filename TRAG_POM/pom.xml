@@ -19,6 +19,10 @@
         <module>DTONegocios_TRAG</module>
         <module>Mapeadores_TRAG</module>
         <module>AdministradorOrdenesTrabajo_TRAG</module>
+        <module>CustomerAndVehicleService_TRAG</module>
+        <module>Quotes_Persistence_TRAG</module>
+        <module>InventoryAndService_Persistence_TRAG</module>
+        <module>CustomerAndVehicle_Persistence_TRAG</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
