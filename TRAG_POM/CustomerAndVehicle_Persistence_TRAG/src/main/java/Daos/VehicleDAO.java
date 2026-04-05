@@ -10,6 +10,8 @@ import Entitys.Vehicle;
 import Exceptions.PersistenceException;
 import Interfaces.IVehicleDAO;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 
 /**
  *

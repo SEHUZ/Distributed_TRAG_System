@@ -1,1 +1,14 @@
+Daos\ServicesDAO.class
+Entitys\Service_.class
+Entitys\Supplier.class
+Entitys\Supply.class
+Interfaces\ISuppliesDAO.class
+Interfaces\IServicesDAO.class
+Entitys\Service.class
+Entitys\Supply_.class
+Entitys\ServiceSupply.class
 Connection\Connection.class
+Entitys\ServiceSupply_.class
+Entitys\Supplier_.class
+Exception\PersistenceException.class
+Daos\SuppliesDAO.class

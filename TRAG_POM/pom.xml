@@ -12,7 +12,6 @@
         <module>AdministradorInsumos_TRAG</module>
         <module>AdministradorCotizaciones_TRAG</module>
         <module>Presentacion_TRAG</module>
-        <module>Persistencia_TRAG</module>
         <module>ExcepcionesNegocio_TRAG</module>
         <module>Pruebas_TRAG</module>
         <module>Negocios_TRAG</module>
