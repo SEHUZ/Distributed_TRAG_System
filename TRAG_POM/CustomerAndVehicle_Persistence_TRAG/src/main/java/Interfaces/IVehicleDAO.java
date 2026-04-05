@@ -14,7 +14,8 @@ import java.util.List;
  */
 public interface IVehicleDAO {
     
-    public abstract Vehicle createVehicle(Vehicle vehicle) throws PersistenceException;
+    public abstract Vehicle addVehicle(Vehicle vehicle) throws PersistenceException;
     public abstract Vehicle getVehicle(Long idVehicle) throws PersistenceException;
     public abstract List<Vehicle> getAllVehicles() throws PersistenceException;
+    public abstract Vehicle updateVehicle(Vehicle vehicle) throws PersistenceException;
 }
