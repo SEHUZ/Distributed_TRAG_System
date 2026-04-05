@@ -1,1 +1,9 @@
+Daos\QuoteDAO.class
+Entitys\QuoteSupply.class
+Entitys\QuoteSupply_.class
+Interfaces\IQuotesDAO.class
 Connection\Connection.class
+Entitys\Quote_.class
+Enums\QuoteStatus.class
+Exception\PersistenceException.class
+Entitys\Quote.class
