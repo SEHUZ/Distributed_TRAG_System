@@ -6,11 +6,12 @@
         <artifactId>TRAG_POM</artifactId>
         <version>1.0</version>
     </parent>
-    <artifactId>DTONegocios_TRAG</artifactId>
+    <artifactId>QuoteService_TRAG</artifactId>
     <packaging>jar</packaging>
     <properties>
-        <maven.compiler.release>21</maven.compiler.release>
-        <exec.mainClass>com.mycompany.dtonegocios.DTONegocios</exec.mainClass>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <exec.mainClass>com.mycompany.quoteservice.QuoteService</exec.mainClass>
     </properties>
-    <name>DTONegocios_TRAG</name>
+    <name>QuoteService_TRAG</name>
 </project>

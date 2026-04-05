@@ -15,13 +15,15 @@
         <module>ExcepcionesNegocio_TRAG</module>
         <module>Pruebas_TRAG</module>
         <module>Negocios_TRAG</module>
-        <module>DTONegocios_TRAG</module>
         <module>Mapeadores_TRAG</module>
         <module>AdministradorOrdenesTrabajo_TRAG</module>
         <module>CustomerAndVehicleService_TRAG</module>
         <module>Quotes_Persistence_TRAG</module>
         <module>InventoryAndService_Persistence_TRAG</module>
         <module>CustomerAndVehicle_Persistence_TRAG</module>
+        <module>BusinessDTO_TRAG</module>
+        <module>InventoryAndServiceService_TRAG</module>
+        <module>QuoteService_TRAG</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
