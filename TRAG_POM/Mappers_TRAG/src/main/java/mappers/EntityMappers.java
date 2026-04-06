@@ -99,7 +99,6 @@ public class EntityMappers {
             estadoNegocio = QuoteStatusBusiness.valueOf(entity.getStatus().name());
         }
 
-        // Calculamos el total sumando mano de obra + subtotal de cada insumo
         BigDecimal totalPrice = entity.getLaborPrice() != null ? entity.getLaborPrice() : BigDecimal.ZERO;
         if (quoteSuppliesDetails != null) {
             for (QuoteSupplyDetailDTO supply : quoteSuppliesDetails) {

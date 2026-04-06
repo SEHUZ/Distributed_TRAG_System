@@ -299,7 +299,7 @@ public class DTOMappers {
         if (dto == null) return null;
         Supply entity = new Supply();
         entity.setName(dto.getName());
-        entity.setSuggestedCost(dto.getSuggestedPrice()); // Asumiendo que va al precio de venta
+        entity.setSuggestedCost(dto.getSuggestedPrice());
         
         if (dto.getSupplierId() != null) {
             entity.setSupplier(new Supplier(dto.getSupplierId()));
