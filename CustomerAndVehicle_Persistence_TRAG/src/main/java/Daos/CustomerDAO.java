@@ -7,7 +7,7 @@ package Daos;
 import Connection.Connection;
 import Entitys.Customer;
 import Enums.CustomerStatus;
-import Exceptions.PersistenceException;
+import Exception.PersistenceException;
 import Interfaces.ICustomerDAO;
 import java.util.List;
 import javax.persistence.EntityManager;

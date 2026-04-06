@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.mycompany.grpc";
+option java_outer_classname = "CustomerVehicleProto";
+
+service CustomerVehicleServiceGrpc {
+  rpc GetCustomerSummary (CustomerRequest) returns (CustomerSummaryResponse);
+  rpc GetVehicleSummary (VehicleRequest) returns (VehicleSummaryResponse);
+}
+
+
+message CustomerRequest {
+  int64 customer_id = 1;
+}
+
+message VehicleRequest {
+  int64 vehicle_id = 1;
+}
+
+message CustomerSummaryResponse {
+  int64 id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string second_last_name = 4;
+  bool exists = 5;
+}
+
+message VehicleSummaryResponse {
+  int64 id = 1;
+  int32 year = 2;
+  string license_plate = 3;
+  string model = 4;
+  string brand = 5;
+  bool exists = 6;
+}

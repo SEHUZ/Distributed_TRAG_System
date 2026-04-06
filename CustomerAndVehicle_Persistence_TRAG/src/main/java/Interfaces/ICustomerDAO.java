@@ -5,7 +5,7 @@
 package Interfaces;
 
 import Entitys.Customer;
-import Exceptions.PersistenceException;
+import Exception.PersistenceException;
 import java.util.List;
 
 /**

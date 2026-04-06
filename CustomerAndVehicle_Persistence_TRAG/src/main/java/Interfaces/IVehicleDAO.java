@@ -5,7 +5,7 @@
 package Interfaces;
 
 import Entitys.Vehicle;
-import Exceptions.PersistenceException;
+import Exception.PersistenceException;
 import java.util.List;
 
 /**
