@@ -1,8 +1,7 @@
-
 package presentacion.interfaces.vistas;
 
-import dtos.cotizacion.CotizacionDetalleDTO;
-import dtos.insumos.InsumoResumenDTO;
+import dtos.quote.QuoteDetailDTO;
+import dtos.supply.SupplySummaryDTO;
 import java.util.List;
 import presentacion.interfaces.IVista;
 
@@ -12,13 +11,14 @@ import presentacion.interfaces.IVista;
  * 
  * @author Ariel Eduardo Borbón Izaguirre - 253080
  * @author Sebastián Bórquez Huerta - 253080
+ * @author Chris Fitch Lopez - 252379
  * @author Yuri Germán García López - 253080
  * @author Manuel Romo López - 253080
  * 
  */
 public interface IVistaConsultaCotizacion extends IVista{
-    public abstract void cargarCotizacionSeleccionada(CotizacionDetalleDTO cotizacion);
-    public abstract void actualizarSugerencias(List<InsumoResumenDTO> insumos);
-    public abstract void agregarInsumoTabla(InsumoResumenDTO insumo);
+    public void cargarDetalleCotizacion(QuoteDetailDTO cotizacion);
+    public void actualizarSugerencias(List<SupplySummaryDTO> insumos);
+    public void agregarInsumoTabla(SupplySummaryDTO insumoResumen);
     public abstract void mostrarMensajeExito();
 }

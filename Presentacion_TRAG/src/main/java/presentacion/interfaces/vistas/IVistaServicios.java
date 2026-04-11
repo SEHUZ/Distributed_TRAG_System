@@ -1,7 +1,7 @@
 
 package presentacion.interfaces.vistas;
 
-import dtos.servicio.ServicioResumenDTO;
+import dtos.service.ServiceSummaryDTO;
 import java.util.List;
 import presentacion.interfaces.IVista;
 
@@ -11,10 +11,9 @@ import presentacion.interfaces.IVista;
  * 
  * @author Ariel Eduardo Borbón Izaguirre - 253080
  * @author Sebastián Bórquez Huerta - 253080
- * @author Yuri Germán García López - 253080
- * @author Manuel Romo López - 253080
+ * @author Chris Fitch Lopez - 252379
  * 
  */
-public interface IVistaServicios extends IVista{
-    public void cargarServicios(List<ServicioResumenDTO> servicios);
+public interface IVistaServicios extends IVista {
+    public void cargarServicios(List<ServiceSummaryDTO> servicios);
 }

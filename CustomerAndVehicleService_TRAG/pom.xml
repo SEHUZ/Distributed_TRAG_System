@@ -5,15 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
     
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.4</version> 
-        <relativePath/> 
+        <groupId>com.mycompany.trag</groupId>
+        <artifactId>Distributed_TRAG_System</artifactId>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.mycompany</groupId>
+    <groupId>com.mycompany.trag</groupId>
     <artifactId>CustomerAndVehicleService_TRAG</artifactId>
-    <version>1.0</version>
+    <version>1.0-SNAPSHOT</version> 
     <packaging>jar</packaging>
 
     <properties>
@@ -28,24 +27,32 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <version>3.2.3</version>
         </dependency>
 
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
+            <version>8.3.0</version>
         </dependency>
 
         <dependency>
-            <groupId>com.mycompany</groupId>
+            <groupId>com.mycompany.trag</groupId> 
             <artifactId>CustomerAndVehicle_Persistence_TRAG</artifactId>
-            <version>1.0</version>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>com.mycompany</groupId>
+            <groupId>com.mycompany.trag</groupId> 
             <artifactId>BusinessDTO_TRAG</artifactId>
-            <version>1.0</version>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.mycompany.trag</groupId> 
+            <artifactId>Mappers_TRAG</artifactId>
+            <version>1.0-SNAPSHOT</version> 
         </dependency>
 
         <dependency>
@@ -70,11 +77,6 @@
             <version>1.3.2</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>Mappers_TRAG</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>eclipselink</artifactId>
             <version>2.7.12</version> 
@@ -93,6 +95,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.2.3</version>
             </plugin>
             
             <plugin>
@@ -113,13 +116,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
         </plugins>
-        
-        
     </build>
 
 </project>

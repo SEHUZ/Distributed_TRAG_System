@@ -1,8 +1,8 @@
 
 package presentacion.vistas;
 
-import dtos.automovil.AutomovilResumenDTO;
-import dtos.cliente.ClienteResumenDTO;
+import dtos.vehicle.VehicleSummaryDTO; 
+import dtos.customer.CustomerSummaryDTO;
 import java.awt.Dimension;
 import java.util.List;
 import java.util.logging.Logger;
@@ -18,6 +18,7 @@ import presentacion.interfaces.vistas.IVistaSeleccionClienteAuto;
  * 
  * @author Ariel Eduardo Borbón Izaguirre - 253080
  * @author Sebastián Bórquez Huerta - 253080
+ * @author Chris Fitch Lopez - 252379
  * @author Yuri Germán García López - 253080
  * @author Manuel Romo López - 253080
  * 
@@ -52,11 +53,6 @@ public class VistaSeleccionClienteAuto extends JFrame implements IVistaSeleccion
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        panelEncabezado1 = new presentacion.vistas.PanelEncabezado();
-        panelEncabezado2 = new presentacion.vistas.PanelEncabezado();
-        panelEncabezado3 = new presentacion.vistas.PanelEncabezado();
-        panelEncabezado4 = new presentacion.vistas.PanelEncabezado();
-        panelEncabezado5 = new presentacion.vistas.PanelEncabezado();
         panelPrincipal = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -76,7 +72,6 @@ public class VistaSeleccionClienteAuto extends JFrame implements IVistaSeleccion
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1100, 700));
         setPreferredSize(new java.awt.Dimension(1100, 700));
-        getContentPane().add(panelEncabezado5, java.awt.BorderLayout.PAGE_START);
 
         panelPrincipal.setLayout(new java.awt.GridBagLayout());
 
@@ -256,10 +251,6 @@ public class VistaSeleccionClienteAuto extends JFrame implements IVistaSeleccion
         regresarSeleccionClienteAutomovil();
     }//GEN-LAST:event_btnVolverActionPerformed
 
-    private void cmbBoxClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbBoxClientesActionPerformed
-        seleccionarCliente();
-    }//GEN-LAST:event_cmbBoxClientesActionPerformed
-
     private void btnContinuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinuarActionPerformed
         continuar();
     }//GEN-LAST:event_btnContinuarActionPerformed
@@ -268,8 +259,12 @@ public class VistaSeleccionClienteAuto extends JFrame implements IVistaSeleccion
         seleccionarAutomovil();
     }//GEN-LAST:event_cmbBoxAutomovilesActionPerformed
 
+    private void cmbBoxClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbBoxClientesActionPerformed
+        seleccionarCliente();
+    }//GEN-LAST:event_cmbBoxClientesActionPerformed
+
     private void seleccionarCliente(){
-        ClienteResumenDTO clienteSeleccionado = (ClienteResumenDTO) cmbBoxClientes.getSelectedItem();
+        CustomerSummaryDTO clienteSeleccionado = (CustomerSummaryDTO) cmbBoxClientes.getSelectedItem();
         
         if(clienteSeleccionado != null){
             Long idClienteSeleccionado = clienteSeleccionado.getId();
@@ -284,7 +279,7 @@ public class VistaSeleccionClienteAuto extends JFrame implements IVistaSeleccion
     }
     
     private void seleccionarAutomovil(){
-        AutomovilResumenDTO automovilSeleccionado = (AutomovilResumenDTO) cmbBoxAutomoviles.getSelectedItem();
+        VehicleSummaryDTO automovilSeleccionado = (VehicleSummaryDTO) cmbBoxAutomoviles.getSelectedItem();
         
         if(automovilSeleccionado != null){
             control.seleccionarAutomovil(automovilSeleccionado);
@@ -304,8 +299,8 @@ public class VistaSeleccionClienteAuto extends JFrame implements IVistaSeleccion
     private javax.swing.JButton Añadir;
     private javax.swing.JButton btnContinuar;
     private javax.swing.JButton btnVolver;
-    private javax.swing.JComboBox<AutomovilResumenDTO> cmbBoxAutomoviles;
-    private javax.swing.JComboBox<ClienteResumenDTO> cmbBoxClientes;
+    private javax.swing.JComboBox<VehicleSummaryDTO> cmbBoxAutomoviles;
+    private javax.swing.JComboBox<CustomerSummaryDTO> cmbBoxClientes;
     private javax.swing.JLabel imgAutomovil;
     private javax.swing.JLabel imgCliente;
     private javax.swing.JButton jButton1;
@@ -315,28 +310,22 @@ public class VistaSeleccionClienteAuto extends JFrame implements IVistaSeleccion
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private presentacion.vistas.PanelEncabezado panelEncabezado1;
-    private presentacion.vistas.PanelEncabezado panelEncabezado2;
-    private presentacion.vistas.PanelEncabezado panelEncabezado3;
-    private presentacion.vistas.PanelEncabezado panelEncabezado4;
-    private presentacion.vistas.PanelEncabezado panelEncabezado5;
     private javax.swing.JPanel panelPrincipal;
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void cargarClientes(List<ClienteResumenDTO> clientes) {
+    public void cargarClientes(List<CustomerSummaryDTO> clientes) {
         cmbBoxClientes.removeAllItems();
         clientes.forEach(cmbBoxClientes::addItem);
     }
 
     @Override
-    public void cargarAutosCliente(List<AutomovilResumenDTO> automoviles) {
+    public void cargarAutosCliente(List<VehicleSummaryDTO> automoviles) {
         cmbBoxAutomoviles.removeAllItems();
         automoviles.forEach(cmbBoxAutomoviles::addItem);
     }
     
-    @Override
-    public void cargarClientes(List<ClienteResumenDTO> clientes, Long idClienteSeleccionado) {
+    public void cargarClientes(List<CustomerSummaryDTO> clientes, Long idClienteSeleccionado) {
         cmbBoxClientes.removeAllItems();
         clientes.forEach(cmbBoxClientes::addItem);
         
@@ -349,8 +338,8 @@ public class VistaSeleccionClienteAuto extends JFrame implements IVistaSeleccion
         
     }
 
-    @Override
-    public void cargarAutosCliente(List<AutomovilResumenDTO> automoviles, Long idAutomovilSeleccionado) {
+
+    public void cargarAutosCliente(List<VehicleSummaryDTO> automoviles, Long idAutomovilSeleccionado) {
         
         cmbBoxAutomoviles.removeAllItems();
         automoviles.forEach(cmbBoxAutomoviles::addItem);

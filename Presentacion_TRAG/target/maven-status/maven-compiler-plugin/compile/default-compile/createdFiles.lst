@@ -40,6 +40,7 @@ presentacion\vistas\VistaCrearCotizacion$SpinnerEditor.class
 presentacion\vistas\VistaPrincipal$1.class
 presentacion\interfaces\IControlConsultarCotizaciones.class
 presentacion\vistas\VistaDiagnosticoEstado$4.class
+presentacion\interfaces\IVistaSeleccionClienteAuto.class
 presentacion\vistas\VistaCrearCotizacion$5.class
 presentacion\vistas\VistaServicios$1.class
 presentacion\vistas\VistaHistorialCotizaciones$2.class
@@ -59,6 +60,7 @@ presentacion\vistas\PanelEncabezado.class
 presentacion\utils\VistaConsultaCotizacionPrevia.class
 presentacion\utils\VistaConsultaCotizacionPrevia$4.class
 presentacion\vistas\VistaHistorialCotizaciones$1.class
+presentacion\fabrica\FabricaNegocios.class
 presentacion\vistas\VistaCrearCotizacion$14.class
 presentacion\vistas\VistaConsultaCotizacion$6.class
 presentacion\controles\ControlCotizaciones.class

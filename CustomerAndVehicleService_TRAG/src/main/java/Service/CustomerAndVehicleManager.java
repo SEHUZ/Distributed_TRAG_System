@@ -26,8 +26,9 @@ import mappers.EntityMappers;
 import org.springframework.stereotype.Service;
 
 /**
- *
- * @author sonic
+ * @author Ariel Eduardo Borbón Izaguirre - 253080
+ * @author Sebastián Bórquez Huerta - 253080
+ * @author Chris Fitch Lopez - 252379
  */
 @Service
 public class CustomerAndVehicleManager {
@@ -36,12 +37,11 @@ public class CustomerAndVehicleManager {
     private final IVehicleDAO vehicleDAO;
 
     public CustomerAndVehicleManager() {
-        this.customerDAO = new CustomerDAO(); 
+        this.customerDAO = new CustomerDAO();
         this.vehicleDAO = new VehicleDAO();
     }
-    
-    //CUSTOMER METHODS
 
+    //CUSTOMER METHODS
     public CustomerDetailDTO createCustomer(CustomerAddDTO dto) throws BusinessException {
         if (dto == null) {
             throw new BusinessException("Los datos del cliente no pueden ser nulos.");
@@ -56,7 +56,9 @@ public class CustomerAndVehicleManager {
     }
 
     public CustomerDetailDTO getCustomer(Long customerId) throws BusinessException {
-        if (customerId == null) throw new BusinessException("El ID del cliente es requerido.");
+        if (customerId == null) {
+            throw new BusinessException("El ID del cliente es requerido.");
+        }
         try {
             Customer entity = customerDAO.getCustomer(customerId);
             if (entity == null) {
@@ -80,7 +82,7 @@ public class CustomerAndVehicleManager {
             throw new BusinessException("Error al obtener la lista de clientes.", e);
         }
     }
-    
+
     public CustomerDetailDTO updateCustomer(CustomerUpdateDTO dto) throws BusinessException {
         if (dto == null || dto.getId() == null) {
             throw new BusinessException("Los datos de actualización o el ID del cliente son inválidos.");
@@ -92,11 +94,21 @@ public class CustomerAndVehicleManager {
                 throw new BusinessException("No se puede actualizar. Cliente no encontrado.");
             }
 
-            if (dto.getFirstName() != null) existingCustomer.setFirstName(dto.getFirstName());
-            if (dto.getLastName() != null) existingCustomer.setLastName(dto.getLastName());
-            if (dto.getSecondLastName() != null) existingCustomer.setSecondLastName(dto.getSecondLastName());
-            if (dto.getPhoneNumber() != null) existingCustomer.setPhoneNumber(dto.getPhoneNumber());
-            if (dto.getEmail() != null) existingCustomer.setEmail(dto.getEmail());
+            if (dto.getFirstName() != null) {
+                existingCustomer.setFirstName(dto.getFirstName());
+            }
+            if (dto.getLastName() != null) {
+                existingCustomer.setLastName(dto.getLastName());
+            }
+            if (dto.getSecondLastName() != null) {
+                existingCustomer.setSecondLastName(dto.getSecondLastName());
+            }
+            if (dto.getPhoneNumber() != null) {
+                existingCustomer.setPhoneNumber(dto.getPhoneNumber());
+            }
+            if (dto.getEmail() != null) {
+                existingCustomer.setEmail(dto.getEmail());
+            }
 
             Customer updatedEntity = customerDAO.updateCustomer(existingCustomer);
             return EntityMappers.toCustomerDetailDTO(updatedEntity);
@@ -105,11 +117,8 @@ public class CustomerAndVehicleManager {
             throw new BusinessException("Error al actualizar el cliente.", e);
         }
     }
-    
-    
-    
+
     //VEHICLE METHODS
-    
     public VehicleDetailDTO addVehicle(VehicleAddDTO dto) throws BusinessException {
         if (dto == null) {
             throw new BusinessException("Los datos del vehículo no pueden ser nulos.");
@@ -125,9 +134,11 @@ public class CustomerAndVehicleManager {
             throw new BusinessException("Error al registrar el vehículo.", e);
         }
     }
-    
+
     public VehicleDetailDTO getVehicle(Long vehicleId) throws BusinessException {
-        if (vehicleId == null) throw new BusinessException("El ID del vehículo es requerido.");
+        if (vehicleId == null) {
+            throw new BusinessException("El ID del vehículo es requerido.");
+        }
         try {
             Vehicle entity = vehicleDAO.getVehicle(vehicleId);
             if (entity == null) {
@@ -138,7 +149,7 @@ public class CustomerAndVehicleManager {
             throw new BusinessException("Error al buscar el vehículo.", e);
         }
     }
-    
+
     public List<VehicleSummaryDTO> getAllVehicles() throws BusinessException {
         try {
             List<Vehicle> vehicles = vehicleDAO.getAllVehicles();
@@ -150,5 +161,15 @@ public class CustomerAndVehicleManager {
         } catch (PersistenceException e) {
             throw new BusinessException("Error al obtener la lista de vehículos.", e);
         }
+    }
+
+    public interface IAdministradorClientes {
+
+        List<CustomerSummaryDTO> obtenerTodosClientes() throws BusinessException;
+        CustomerDetailDTO obtenerCliente(Long idCliente) throws BusinessException;
+    }
+
+    public interface IAdministradorAutomoviles {
+        
     }
 }

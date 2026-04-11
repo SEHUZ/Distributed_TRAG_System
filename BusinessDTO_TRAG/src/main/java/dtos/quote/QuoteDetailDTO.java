@@ -23,6 +23,9 @@ public class QuoteDetailDTO {
     private String vehicleStatus;
     private String generalDiagnosis;
     private LocalDateTime createdAt;
+    private LocalDateTime creationDate;
+    private String diagnostic;
+    private String vehicleState;
     private List<QuoteSupplyDetailDTO> quoteSupplies;
 
     private String serviceName;
@@ -30,6 +33,9 @@ public class QuoteDetailDTO {
     private VehicleSummaryDTO vehicle;
 
     private QuoteStatusBusiness status;
+
+    public QuoteDetailDTO() {
+    }
 
     public QuoteDetailDTO(Long id, BigDecimal laborPrice, String vehicleStatus, String generalDiagnosis, LocalDateTime createdAt, List<QuoteSupplyDetailDTO> quoteSupplies, String serviceName, CustomerSummaryDTO customer, VehicleSummaryDTO vehicle, QuoteStatusBusiness status) {
         this.id = id;
@@ -80,7 +86,47 @@ public class QuoteDetailDTO {
         return vehicle;
     }
 
+    public String getDiagnostic() {
+        return diagnostic;
+    }
+
+    public void setDiagnostic(String diagnostic) {
+        this.diagnostic = diagnostic;
+    }
+
+    public String getVehicleState() {
+        return vehicleState;
+    }
+
+    public void setVehicleState(String vehicleState) {
+        this.vehicleState = vehicleState;
+    }
+
     public QuoteStatusBusiness getStatus() {
         return status;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public void setCustomer(CustomerSummaryDTO customer) {
+        this.customer = customer;
+    }
+
+    public void setVehicle(VehicleSummaryDTO vehicle) {
+        this.vehicle = vehicle;
+    }
+
+    public void setQuoteSupplies(List<QuoteSupplyDetailDTO> quoteSupplies) {
+        this.quoteSupplies = quoteSupplies;
+    }
+
+    public void setLaborPrice(BigDecimal laborPrice) {
+        this.laborPrice = laborPrice;
     }
 }

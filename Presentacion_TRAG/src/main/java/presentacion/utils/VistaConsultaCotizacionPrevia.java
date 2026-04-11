@@ -1,9 +1,10 @@
 package presentacion.utils;
 
-import dtos.cotizacion.CotizacionResumenDTO;
-import dtos.insumocotizacion.InsumoCotizacionDetalleDTO;
-import dtos.insumos.InsumoDetalleDTO;
-import dtos.insumos.InsumoResumenDTO;
+import dtos.quote.QuoteDetailDTO;
+import dtos.quote.QuoteSummaryDTO;
+import dtos.quoteSupply.QuoteSupplyDetailDTO;
+import dtos.supply.SupplyDetailDTO;
+import dtos.supply.SupplySummaryDTO;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -23,8 +24,13 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import presentacion.vistas.PanelEncabezado;
 import presentacion.interfaces.IControlConsultarCotizaciones;
+
 /**
- * @author Yuri Germán Garcí López - 252583
+ * @author Ariel Eduardo Borbón Izaguirre - 253080
+ * @author Sebastián Bórquez Huerta - 253080
+ * @author Chris Fitch Lopez - 252379
+ * @author Yuri Germán García López - 253080
+ * @author Manuel Romo López - 253080
  */
 public class VistaConsultaCotizacionPrevia extends javax.swing.JFrame implements IVistaConsultaCotizacionPrevia {
 
@@ -205,17 +211,17 @@ public class VistaConsultaCotizacionPrevia extends javax.swing.JFrame implements
     }
     
     // método que ayuda a crear un card donde se acomodarán todos los insumos
-    private JPanel crearCardInsumo(InsumoResumenDTO insumo) {
+   private JPanel crearCardInsumo(SupplySummaryDTO insumo) {
 
         JPanel card = new JPanel(new BorderLayout());
         card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
         card.setBackground(Color.WHITE);
         card.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
-        JLabel nombre = new JLabel(insumo.getNombre());
+        JLabel nombre = new JLabel(insumo.getName());
         nombre.setBorder(BorderFactory.createEmptyBorder(0,10,0,0));
 
-        JLabel precio = new JLabel("$" + insumo.getPrecioSugerido());
+        JLabel precio = new JLabel("$" + insumo.getSuggestedPrice()); 
         precio.setHorizontalAlignment(SwingConstants.RIGHT);
         precio.setBorder(BorderFactory.createEmptyBorder(0,0,0,30));
 
@@ -503,56 +509,45 @@ public class VistaConsultaCotizacionPrevia extends javax.swing.JFrame implements
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-//    public static void main(String args[]) {
-//        presentacion.interfaces.IControlConsultaCotizacion control = new presentacion.controles.ControlConsultaCotizacion();
-//        control.iniciar();
-//    }
 
-    @Override
-    public void cargarDatosCotizacion(CotizacionResumenDTO cotizacion) {
+    public void cargarDatosCotizacion(QuoteDetailDTO cotizacion) {
         if (cotizacion == null) return;
 
         etqNombreCliente.setText(
-            cotizacion.getNombreCliente() != null ? cotizacion.getNombreCliente() : ""
+            cotizacion.getCustomer() != null && cotizacion.getCustomer().getFirstName() != null 
+                    ? cotizacion.getCustomer().getFirstName() : "" 
         );
 
         etqApellido.setText(
-            cotizacion.getApellidoPaternoCliente() != null ? cotizacion.getApellidoPaternoCliente() : ""
+            cotizacion.getCustomer() != null && cotizacion.getCustomer().getLastName() != null 
+                    ? cotizacion.getCustomer().getLastName() : "" 
         );
 
         etqAutomovil.setText(
-            (cotizacion.getMarcaAutomovil() != null ? cotizacion.getMarcaAutomovil() : "") +
+            (cotizacion.getVehicle() != null && cotizacion.getVehicle().getBrand() != null ? cotizacion.getVehicle().getBrand() : "") + 
             " " +
-            (cotizacion.getModeloAutomovil() != null ? cotizacion.getModeloAutomovil() : "")
+            (cotizacion.getVehicle() != null && cotizacion.getVehicle().getModel() != null ? cotizacion.getVehicle().getModel() : "") 
         );
 
-        etqAnioAutomovil.setText(
-            cotizacion.getAnioAutomovil() != null 
-                ? String.valueOf(cotizacion.getAnioAutomovil()) 
-                : ""
-        );
+        etqAnioAutomovil.setText(""); 
 
-        String fecha = (cotizacion.getFechaCreacion() != null)
-                ? cotizacion.getFechaCreacion().toLocalDate().toString()
-                : "N/A";
+        String fecha = (cotizacion.getCreationDate() != null) //cannot find symbol
+                ? cotizacion.getCreationDate().toLocalDate().toString() //cannot find symbol
+                : "N/A"; 
         etqFechaCotizacion.setText(fecha);
         
-        // aquí se calcula el total sumado por todas las pieazas
         java.math.BigDecimal totalInsumos = java.math.BigDecimal.ZERO;
 
-        if (cotizacion.getInsumosCotizacion() != null) {
+        if (cotizacion.getQuoteSupplies() != null) {
 
-            for (InsumoCotizacionDetalleDTO insumo : cotizacion.getInsumosCotizacion()) {
+            for (QuoteSupplyDetailDTO insumo : cotizacion.getQuoteSupplies()) {
 
-                int cantidad = insumo.getCantidadRequerida() != null 
-                        ? insumo.getCantidadRequerida() 
+                int cantidad = insumo.getRequiredQuantity() != null  //cannot find symbol
+                        ? insumo.getRequiredQuantity()  //cannot find symbol
                         : 0;
 
-                java.math.BigDecimal precio = insumo.getPrecio() != null 
-                        ? insumo.getPrecio() 
+                java.math.BigDecimal precio = insumo.getPrice() != null 
+                        ? insumo.getPrice() 
                         : java.math.BigDecimal.ZERO;
                 
                 java.math.BigDecimal subtotal = precio.multiply(
@@ -565,37 +560,35 @@ public class VistaConsultaCotizacionPrevia extends javax.swing.JFrame implements
 
         etqTotalPiezasCotizacion.setText("$" + totalInsumos);
 
-        java.math.BigDecimal manoObra = cotizacion.getPrecioManoObra() != null
-                ? cotizacion.getPrecioManoObra()
+        java.math.BigDecimal manoObra = cotizacion.getLaborPrice() != null
+                ? cotizacion.getLaborPrice()
                 : java.math.BigDecimal.ZERO;
         etqTotalManoObra.setText("$" + manoObra);
         
         java.math.BigDecimal totalFinal = totalInsumos.add(manoObra);
         etqTotalCotizacion.setText("$" + totalFinal);
         
-        // aquí se supone que se cargan los datos de la tabla de insumos
         modeloTabla.setRowCount(0);
 
-        if (cotizacion.getInsumosCotizacion() != null) {
+        if (cotizacion.getQuoteSupplies() != null) {
 
             int contador = 1;
 
-            for (InsumoCotizacionDetalleDTO insumo : cotizacion.getInsumosCotizacion()) {
+            for (QuoteSupplyDetailDTO insumo : cotizacion.getQuoteSupplies()) { 
 
-                String nombrePieza = (insumo.getInsumo() != null 
-                        && insumo.getInsumo().getNombre() != null)
-                        ? insumo.getInsumo().getNombre()
+                String nombrePieza = (insumo.getSupply() != null 
+                        && insumo.getSupply().getName() != null)
+                        ? insumo.getSupply().getName()
                         : "N/A";
 
-                java.math.BigDecimal costo = insumo.getPrecio() != null
-                        ? insumo.getPrecio()
+                java.math.BigDecimal costo = insumo.getPrice() != null
+                        ? insumo.getPrice()
                         : java.math.BigDecimal.ZERO;
 
-                Integer cantidad = insumo.getCantidadRequerida() != null
-                        ? insumo.getCantidadRequerida()
+                Integer cantidad = insumo.getRequiredQuantity() != null //cannot find symbol
+                        ? insumo.getRequiredQuantity() //cannot find symbol
                         : 0;
 
-                // Agregar fila
                 modeloTabla.addRow(new Object[]{
                     contador,
                     nombrePieza,
@@ -655,7 +648,7 @@ public class VistaConsultaCotizacionPrevia extends javax.swing.JFrame implements
     }
     
     @Override
-    public void mostrarInsumosBuscados(List<InsumoResumenDTO> insumos) {
+    public void mostrarInsumosBuscados(List<SupplySummaryDTO> insumos) {
         contenedorInsumosBuscados.removeAll();
 
         if (insumos == null || insumos.isEmpty()) {
@@ -664,7 +657,7 @@ public class VistaConsultaCotizacionPrevia extends javax.swing.JFrame implements
             return;
         }
 
-        for (InsumoResumenDTO insumo : insumos) {
+        for (SupplySummaryDTO insumo : insumos) {
             contenedorInsumosBuscados.add(crearCardInsumo(insumo));
         }
 
@@ -680,19 +673,19 @@ public class VistaConsultaCotizacionPrevia extends javax.swing.JFrame implements
     }
 
     @Override
-    public void aniadirInsumo(InsumoResumenDTO insumo) {
+    public void aniadirInsumo(SupplySummaryDTO insumo) {
         int rowCount = modeloTabla.getRowCount();
         modeloTabla.addRow(new Object[]{
             rowCount + 1,
             insumo,
-            "$" + insumo.getPrecioSugerido(),
+            "$" + insumo.getSuggestedPrice(),
             1
         });
         recalcularTotales();
     }
     
     @Override
-    public void eliminarInsumo(InsumoResumenDTO insumo) {
+    public void eliminarInsumo(SupplySummaryDTO insumo) {
         int filaSeleccionada = tablaInsumos.getSelectedRow();
 
         if (filaSeleccionada == -1) {
@@ -720,26 +713,26 @@ public class VistaConsultaCotizacionPrevia extends javax.swing.JFrame implements
     }
     
     @Override
-    public void guardarInsumo(InsumoResumenDTO insumo) {
+    public void guardarInsumo(SupplySummaryDTO insumo) {
         // TODO
     }
     
     @Override
-    public List<InsumoCotizacionDetalleDTO> obtenerInsumosActuales() {
-        List<InsumoCotizacionDetalleDTO> lista = new java.util.ArrayList<>();
+    public List<QuoteSupplyDetailDTO> obtenerInsumosActuales() {
+        List<QuoteSupplyDetailDTO> lista = new java.util.ArrayList<>();
 
         for (int i = 0; i < modeloTabla.getRowCount(); i++) {
 
-            InsumoResumenDTO insumo =
-                (InsumoResumenDTO) modeloTabla.getValueAt(i, 1);
+            SupplySummaryDTO insumo =
+                (SupplySummaryDTO) modeloTabla.getValueAt(i, 1);
 
             String precioStr = modeloTabla.getValueAt(i, 2).toString().replace("$", "");
             int cantidad = Integer.parseInt(modeloTabla.getValueAt(i, 3).toString());
 
             java.math.BigDecimal precio = new java.math.BigDecimal(precioStr);
 
-            InsumoCotizacionDetalleDTO dto =
-                new InsumoCotizacionDetalleDTO(
+            QuoteSupplyDetailDTO dto =
+                new QuoteSupplyDetailDTO(
                     null,
                     cantidad,
                     precio
@@ -749,5 +742,10 @@ public class VistaConsultaCotizacionPrevia extends javax.swing.JFrame implements
         }
 
         return lista;
+    }
+
+    @Override
+    public void cargarDatosCotizacion(QuoteSummaryDTO cotizacion) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

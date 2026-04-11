@@ -1,7 +1,7 @@
-C:\Users\sonic\OneDrive\Documentos\GitHub\Distributed_TRAG_System\TRAG_POM\Quotes_Persistence_TRAG\src\main\java\Entitys\QuoteSupply.java
-C:\Users\sonic\OneDrive\Documentos\GitHub\Distributed_TRAG_System\TRAG_POM\Quotes_Persistence_TRAG\src\main\java\Daos\QuoteDAO.java
-C:\Users\sonic\OneDrive\Documentos\GitHub\Distributed_TRAG_System\TRAG_POM\Quotes_Persistence_TRAG\src\main\java\Connection\Connection.java
-C:\Users\sonic\OneDrive\Documentos\GitHub\Distributed_TRAG_System\TRAG_POM\Quotes_Persistence_TRAG\src\main\java\Enums\QuoteStatus.java
-C:\Users\sonic\OneDrive\Documentos\GitHub\Distributed_TRAG_System\TRAG_POM\Quotes_Persistence_TRAG\src\main\java\Interfaces\IQuotesDAO.java
-C:\Users\sonic\OneDrive\Documentos\GitHub\Distributed_TRAG_System\TRAG_POM\Quotes_Persistence_TRAG\src\main\java\Entitys\Quote.java
-C:\Users\sonic\OneDrive\Documentos\GitHub\Distributed_TRAG_System\TRAG_POM\Quotes_Persistence_TRAG\src\main\java\Exception\PersistenceException.java
+C:\Users\chris\OneDrive\Documents\Universidad\SEM_VI\Systems\Distributed_TRAG_System\Quotes_Persistence_TRAG\src\main\java\Connection\Connection.java
+C:\Users\chris\OneDrive\Documents\Universidad\SEM_VI\Systems\Distributed_TRAG_System\Quotes_Persistence_TRAG\src\main\java\Daos\QuoteDAO.java
+C:\Users\chris\OneDrive\Documents\Universidad\SEM_VI\Systems\Distributed_TRAG_System\Quotes_Persistence_TRAG\src\main\java\Entitys\Quote.java
+C:\Users\chris\OneDrive\Documents\Universidad\SEM_VI\Systems\Distributed_TRAG_System\Quotes_Persistence_TRAG\src\main\java\Entitys\QuoteSupply.java
+C:\Users\chris\OneDrive\Documents\Universidad\SEM_VI\Systems\Distributed_TRAG_System\Quotes_Persistence_TRAG\src\main\java\Enums\QuoteStatus.java
+C:\Users\chris\OneDrive\Documents\Universidad\SEM_VI\Systems\Distributed_TRAG_System\Quotes_Persistence_TRAG\src\main\java\Exception\PersistenceException.java
+C:\Users\chris\OneDrive\Documents\Universidad\SEM_VI\Systems\Distributed_TRAG_System\Quotes_Persistence_TRAG\src\main\java\Interfaces\IQuotesDAO.java

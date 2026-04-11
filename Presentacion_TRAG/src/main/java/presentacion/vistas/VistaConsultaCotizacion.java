@@ -1,9 +1,11 @@
 
 package presentacion.vistas;
 
-import dtos.cotizacion.CotizacionDetalleDTO;
-import dtos.insumocotizacion.InsumoCotizacionDetalleDTO;
-import dtos.insumos.InsumoResumenDTO;
+import dtos.quote.QuoteDetailDTO;
+import dtos.quoteSupply.QuoteSupplyDetailDTO;
+import dtos.supply.SupplySummaryDTO;
+import java.awt.BorderLayout;
+import dtos.quote.QuoteDetailDTO;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -30,6 +32,7 @@ import presentacion.interfaces.IControlConsultarCotizaciones;
  * 
  * @author Ariel Eduardo Borbón Izaguirre - 253080
  * @author Sebastián Bórquez Huerta - 253080
+ * @author Chris Fitch Lopez - 252379
  * @author Yuri Germán García López - 253080
  * @author Manuel Romo López - 253080
  * 
@@ -41,6 +44,7 @@ public class VistaConsultaCotizacion extends JFrame implements IVistaConsultaCot
     private Long idCotizacion;
     
     private boolean esCancelada = false;
+    
     /**
      * Creates new form VistaCrearCotizacion
      */
@@ -107,21 +111,16 @@ public class VistaConsultaCotizacion extends JFrame implements IVistaConsultaCot
     }
     
     @Override
-    public void actualizarSugerencias(List<InsumoResumenDTO> insumos) {
+    public void actualizarSugerencias(List<SupplySummaryDTO> insumos) {
         DefaultListModel<String> modelo = new DefaultListModel<>();
+        for (SupplySummaryDTO insumo : insumos) {
+            modelo.addElement(insumo.getName()); 
+        }
         
-        insumos.stream()
-                .map(InsumoResumenDTO::getNombre)
-                .forEach(modelo::addElement);
-                
-        boolean tieneCoincidencias = !modelo.isEmpty();
-
-        if (tieneCoincidencias) {
-            listBuscarInsumos.setModel(modelo);
-            scrollPaneBuscarInsumos.setPreferredSize(new Dimension(cmpTxtBuscarInsumos.getWidth(), 150));
-            popMenuBuscarInsumos.pack();
+        listBuscarInsumos.setModel(modelo); 
+        
+        if (!insumos.isEmpty()) {
             popMenuBuscarInsumos.show(cmpTxtBuscarInsumos, 0, cmpTxtBuscarInsumos.getHeight());
-            cmpTxtBuscarInsumos.requestFocus(); 
         } else {
             popMenuBuscarInsumos.setVisible(false);
         }
@@ -132,36 +131,25 @@ public class VistaConsultaCotizacion extends JFrame implements IVistaConsultaCot
     }
     
     @Override
-    public void agregarInsumoTabla(InsumoResumenDTO insumoResumen) {
+    public void agregarInsumoTabla(SupplySummaryDTO insumoResumen) {
         DefaultTableModel modelo = (DefaultTableModel) tblInsumosCotizacion.getModel();
-        Long idNuevo = insumoResumen.getId();
-
-        for (int i = 0; i < modelo.getRowCount(); i++) {
-            Long idExistente = (Long) modelo.getValueAt(i, 6);
-
-            if (idExistente != null && idExistente.equals(idNuevo)) {
-                return; 
-            }
-        }
-
-        int numeroInsumo = modelo.getRowCount() + 1;
-        String nombreInsumo = insumoResumen.getNombre();
-        BigDecimal costoSugerido = insumoResumen.getPrecioSugerido();
-        int cantidad = 1;
-        BigDecimal subtotal = insumoResumen.getPrecioSugerido(); 
+        int rowCount = modelo.getRowCount();
+        
+        String nombreInsumo = insumoResumen.getName(); // getName()
+        BigDecimal costoSugerido = insumoResumen.getSuggestedPrice(); // getSuggestedPrice()
+        BigDecimal subtotal = insumoResumen.getSuggestedPrice(); 
 
         modelo.addRow(new Object[]{
-            numeroInsumo,
+            rowCount + 1,
             nombreInsumo,
             costoSugerido,
-            cantidad,
+            1, 
             subtotal,
             "Eliminar",
-            idNuevo
+            insumoResumen.getId()
         });
 
         recalcularTotales();
-        crearBorradorCotizacion();
     }
     
     private void configurarTablaInsumos() {
@@ -724,14 +712,41 @@ public class VistaConsultaCotizacion extends JFrame implements IVistaConsultaCot
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void cargarCotizacionSeleccionada(CotizacionDetalleDTO cotizacion) {
+    public void cargarDetalleCotizacion(QuoteDetailDTO cotizacion) {
         idCotizacion = cotizacion.getId();
-        lblNombreServicio.setText(cotizacion.getNombreServicio());
-        cmpTxtCostoManoObra.setText(cotizacion.getPrecioManoObra().toString());
+        lblNombreServicio.setText(cotizacion.getServiceName() != null ? cotizacion.getServiceName() : "Servicio Desconocido"); 
+        
+        cmpTxtCostoManoObra.setText(
+            cotizacion.getLaborPrice() != null ? cotizacion.getLaborPrice().toString() : "0.00" 
+        );
+
+        esCancelada = cotizacion.getStatus() != null && cotizacion.getStatus().name().equals("CANCELADA"); 
+
+        if (esCancelada) {
+            cmpTxtBuscarInsumos.setEnabled(false); 
+            cmpTxtCostoManoObra.setEnabled(false); 
+            btnActualizar.setEnabled(false); 
+            btnAgregarInsumo.setEnabled(false);
+        } else {
+            cmpTxtBuscarInsumos.setEnabled(true);
+            cmpTxtCostoManoObra.setEnabled(true);
+            btnActualizar.setEnabled(true);
+            btnAgregarInsumo.setEnabled(true);
+            
+        }
+
+        llenarTablaInsumos(cotizacion);
+        recalcularTotales();
+    }
+    
+    public void cargarCotizacionSeleccionada(QuoteDetailDTO cotizacion) {
+        idCotizacion = cotizacion.getId();
+        lblNombreServicio.setText(cotizacion.getServiceName());
+        cmpTxtCostoManoObra.setText(cotizacion.getLaborPrice().toString());
         
 
-        esCancelada = cotizacion.getEstado() != null && 
-                      cotizacion.getEstado().name().equals("CANCELADA");
+        esCancelada = cotizacion.getStatus() != null && 
+                      cotizacion.getStatus().name().equals("CANCELADA");
 
         cmpTxtCostoManoObra.setEditable(!esCancelada);
         
@@ -748,23 +763,32 @@ public class VistaConsultaCotizacion extends JFrame implements IVistaConsultaCot
         recalcularTotales();
     }
     
-    private void llenarTablaInsumos(CotizacionDetalleDTO cotizacion) {
-        
+    private void llenarTablaInsumos(QuoteDetailDTO cotizacion) {
         DefaultTableModel modelo = (DefaultTableModel) tblInsumosCotizacion.getModel();
-        
-        modelo.setRowCount(0);
+        modelo.setRowCount(0); 
 
-        if (cotizacion != null && cotizacion.getInsumosCotizacion() != null) {
+        if (cotizacion != null && cotizacion.getQuoteSupplies() != null) {
             int i = 1;
-            for (InsumoCotizacionDetalleDTO insumoCotizacion : cotizacion.getInsumosCotizacion()) {
+            for (QuoteSupplyDetailDTO insumoCotizacion : cotizacion.getQuoteSupplies()) {
+                
+                String nombrePieza = (insumoCotizacion.getSupply() != null && insumoCotizacion.getSupply().getName() != null) 
+                        ? insumoCotizacion.getSupply().getName() 
+                        : "N/A";
+                
+                BigDecimal costo = insumoCotizacion.getPrice() != null ? insumoCotizacion.getPrice() : BigDecimal.ZERO;
+                Integer cantidad = insumoCotizacion.getRequiredQuantity() != null ? insumoCotizacion.getRequiredQuantity() : 0;
+                BigDecimal subtotal = costo.multiply(new BigDecimal(cantidad));
+                
+                Long idInsumo = insumoCotizacion.getSupply() != null ? insumoCotizacion.getSupply().getId() : null;
+
                 modelo.addRow(new Object[]{
                     i++,
-                    insumoCotizacion.getInsumo().getNombre(),
-                    insumoCotizacion.getPrecio(),
-                    insumoCotizacion.getCantidadRequerida(),
-                    insumoCotizacion.getSubtotal(),
-                    "Eliminar",
-                    insumoCotizacion.getInsumo().getId()
+                    nombrePieza,
+                    costo,
+                    cantidad,
+                    subtotal,
+                    esCancelada ? "" : "Eliminar", 
+                    idInsumo
                 });
             }
         }
@@ -909,6 +933,7 @@ public class VistaConsultaCotizacion extends JFrame implements IVistaConsultaCot
             modelo.setValueAt(i + 1, i, 0);
         }
     }
+
 
     class ButtonRenderer extends javax.swing.JButton implements javax.swing.table.TableCellRenderer {
         public ButtonRenderer() {

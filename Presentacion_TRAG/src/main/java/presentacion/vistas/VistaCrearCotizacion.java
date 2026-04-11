@@ -1,10 +1,11 @@
 
 package presentacion.vistas;
 
-import dtos.cotizacion.CotizacionResumenDTO;
-import dtos.insumos.InsumoResumenDTO;
-import dtos.servicio.ServicioDetalleDTO;
-import insumoservicio.InsumoServicioDetalleDTO;
+import dtos.quote.QuoteDetailDTO;
+import dtos.quote.QuoteSummaryDTO;
+import dtos.supply.SupplySummaryDTO;
+import dtos.service.ServiceDetailDTO;
+import dtos.serviceSupply.ServiceSupplyDetailDTO;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -34,6 +35,7 @@ import presentacion.utils.GeneradorPDF;
  * 
  * @author Ariel Eduardo Borbón Izaguirre - 253080
  * @author Sebastián Bórquez Huerta - 253080
+ * @author Chris Fitch Lopez - 252379
  * @author Yuri Germán García López - 253080
  * @author Manuel Romo López - 253080
  * 
@@ -107,11 +109,11 @@ public class VistaCrearCotizacion extends JFrame implements IVistaCrearCotizacio
     }
     
     @Override
-    public void actualizarSugerencias(List<InsumoResumenDTO> insumos) {
+    public void actualizarSugerencias(List<SupplySummaryDTO> insumos) {
         DefaultListModel<String> modelo = new DefaultListModel<>();
         
         insumos.stream()
-                .map(InsumoResumenDTO::getNombre)
+                .map(SupplySummaryDTO::getName)
                 .forEach(modelo::addElement);
                 
         boolean tieneCoincidencias = !modelo.isEmpty();
@@ -133,7 +135,7 @@ public class VistaCrearCotizacion extends JFrame implements IVistaCrearCotizacio
     }
     
     @Override
-    public void agregarInsumoTabla(InsumoResumenDTO insumoResumen) {
+    public void agregarInsumoTabla(SupplySummaryDTO insumoResumen) {
         DefaultTableModel modelo = (DefaultTableModel) tblInsumosServicio.getModel();
         Long idNuevo = insumoResumen.getId();
 
@@ -146,10 +148,10 @@ public class VistaCrearCotizacion extends JFrame implements IVistaCrearCotizacio
         }
 
         int numeroInsumo = modelo.getRowCount() + 1;
-        String nombreInsumo = insumoResumen.getNombre();
-        BigDecimal costoSugerido = insumoResumen.getPrecioSugerido();
+        String nombreInsumo = insumoResumen.getName();
+        BigDecimal costoSugerido = insumoResumen.getSuggestedPrice();
         int cantidad = 1;
-        BigDecimal subtotal = insumoResumen.getPrecioSugerido(); 
+        BigDecimal subtotal = insumoResumen.getSuggestedPrice(); 
 
         modelo.addRow(new Object[]{
             numeroInsumo,
@@ -282,7 +284,6 @@ public class VistaCrearCotizacion extends JFrame implements IVistaCrearCotizacio
         popMenuBuscarInsumos = new javax.swing.JPopupMenu();
         scrollPaneBuscarInsumos = new javax.swing.JScrollPane();
         listBuscarInsumos = new javax.swing.JList<>();
-        panelEncabezado1 = new presentacion.vistas.PanelEncabezado();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -331,7 +332,6 @@ public class VistaCrearCotizacion extends JFrame implements IVistaCrearCotizacio
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1100, 700));
         setPreferredSize(new java.awt.Dimension(1000, 700));
-        getContentPane().add(panelEncabezado1, java.awt.BorderLayout.PAGE_START);
 
         jPanel1.setBackground(new java.awt.Color(204, 255, 51));
         jPanel1.setLayout(new java.awt.GridBagLayout());
@@ -717,40 +717,40 @@ public class VistaCrearCotizacion extends JFrame implements IVistaCrearCotizacio
     private javax.swing.JLabel lblNombreServicio;
     private javax.swing.JLabel lblTotal;
     private javax.swing.JList<String> listBuscarInsumos;
-    private presentacion.vistas.PanelEncabezado panelEncabezado1;
     private javax.swing.JPopupMenu popMenuBuscarInsumos;
     private javax.swing.JScrollPane scrollPaneBuscarInsumos;
     private javax.swing.JTable tblInsumosServicio;
     // End of variables declaration//GEN-END:variables
 
-    @Override
-    public void cargarServicioSeleccionado(ServicioDetalleDTO servicio) {
+    public void cargarServicioSeleccionado(ServiceDetailDTO servicio) {
         
-        lblNombreServicio.setText(servicio.getNombre());
-        cmpTxtCostoManoObra.setText(servicio.getPrecioManoObraSugerido().toString());
+        lblNombreServicio.setText(servicio.getName());
+                cmpTxtCostoManoObra.setText(
+            servicio.getSuggestedLaborPrice() != null ? servicio.getSuggestedLaborPrice().toString() : "0.00"
+        );
+        
         llenarTablaInsumos(servicio);
         recalcularTotales();
         
     }
     
-    private void llenarTablaInsumos(ServicioDetalleDTO servicio) {
+    private void llenarTablaInsumos(ServiceDetailDTO servicio) {
 
         DefaultTableModel modelo = (DefaultTableModel) tblInsumosServicio.getModel();
         
         modelo.setRowCount(0);
         
-        // Se agregan los nuevos datos
-        if (servicio != null && servicio.getInsumosServicio() != null) {
+        if (servicio != null && servicio.getServiceSupplies() != null) {
             int i = 1;
-            for (InsumoServicioDetalleDTO insumoServicio : servicio.getInsumosServicio()) {
+            for (ServiceSupplyDetailDTO insumoServicio : servicio.getServiceSupplies()) {
                 modelo.addRow(new Object[]{
                     i++,
-                    insumoServicio.getInsumo().getNombre(),
-                    insumoServicio.getInsumo().getPrecioSugerido(),
-                    insumoServicio.getCantidadDefault(),
+                    insumoServicio.getSupply().getName(),
+                    insumoServicio.getSupply().getSuggestedPrice(),
+                    insumoServicio.getQuantityNeeded(),
                     insumoServicio.getSubtotal(),
                     "Eliminar",
-                    insumoServicio.getInsumo().getId()
+                    insumoServicio.getSupply().getId()
                 });
             }
         }
@@ -860,8 +860,7 @@ public class VistaCrearCotizacion extends JFrame implements IVistaCrearCotizacio
         dispose();
     }
 
-    @Override
-    public void mostrarGuardadoPdf(CotizacionResumenDTO cotizacion) {
+    public void mostrarGuardadoPdf(QuoteSummaryDTO cotizacion) {
         
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Guardar Cotización en PDF");
@@ -877,18 +876,19 @@ public class VistaCrearCotizacion extends JFrame implements IVistaCrearCotizacio
                 rutaGuardado += ".pdf";
             }
             
-            String nombreCompletoCliente = cotizacion.getNombreCliente() + " " + 
-                    cotizacion.getApellidoPaternoCliente() + " " + 
-                    (cotizacion.getApellidoMaternoCliente() != null ? cotizacion.getApellidoMaternoCliente() : "");
+            String nombreCompletoCliente = cotizacion.getCustomerFirstName() + " " + 
+                    cotizacion.getCustomerLastName() + " " + 
+                    (cotizacion.getCustomerSecondLastName() != null ? cotizacion.getCustomerSecondLastName() : "");
 
 
             GeneradorPDF.crearDocumentoPDF(
                     rutaGuardado, 
-                    cotizacion.getFechaCreacion(),
+                    cotizacion.getCreatedAt(),
                     nombreCompletoCliente, 
-                    cotizacion.getPrecioManoObra(), 
-                    cotizacion.getMarcaAutomovil() + " " + cotizacion.getModeloAutomovil() + " " + cotizacion.getAnioAutomovil() + ", " + cotizacion.getMatriculaAutomovil(),
-                    cotizacion.getInsumosCotizacion());
+                    cotizacion.getLaborPrice(), 
+                    cotizacion.getVehicleBrand() + " " + cotizacion.getVehicleModel() + " " + cotizacion.getVehicleYear() + ", " + cotizacion.getVehicleLicensePlate(),
+                    cotizacion.getQuoteSupplies()
+            );
             
             javax.swing.JOptionPane.showMessageDialog(this, "¡PDF generado con éxito en:\n" + rutaGuardado);
         }
@@ -899,7 +899,6 @@ public class VistaCrearCotizacion extends JFrame implements IVistaCrearCotizacio
         JOptionPane.showMessageDialog(this, mensajeError, "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
     }
     
-    @Override
     public void mostrarMensajeExito() {
         JOptionPane.showMessageDialog(this, "La cotización se ha creado exitosamente.", "Éxito", javax.swing.JOptionPane.INFORMATION_MESSAGE);
     }
@@ -911,6 +910,29 @@ public class VistaCrearCotizacion extends JFrame implements IVistaCrearCotizacio
         for (int i = 0; i < modelo.getRowCount(); i++) {
             modelo.setValueAt(i + 1, i, 0);
         }
+    }
+
+    @Override
+    public void cargarDetalleServicio(ServiceDetailDTO servicio) {
+        
+        lblNombreServicio.setText(servicio.getName());
+        
+        cmpTxtCostoManoObra.setText(
+            servicio.getSuggestedLaborPrice() != null ? servicio.getSuggestedLaborPrice().toString() : "0.00"
+        );
+        
+        llenarTablaInsumos(servicio);
+        recalcularTotales();
+        
+    }
+
+    public void mostrarCotizacionExito(QuoteSummaryDTO cotizacion) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void mostrarCotizacionExito(QuoteDetailDTO cotizacion) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     class ButtonRenderer extends javax.swing.JButton implements javax.swing.table.TableCellRenderer {

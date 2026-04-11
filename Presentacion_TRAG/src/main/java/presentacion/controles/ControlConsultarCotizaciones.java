@@ -1,17 +1,16 @@
-
 package presentacion.controles;
 
+import Exception.BusinessException;
+import Interfaces.IAdministradorInsumos;
 import com.mycompany.administradorcotizaciones_trag.IAdministradorCotizaciones;
-import com.mycompany.administradorinsumos_trag.IAdministradorInsumos;
-import com.mycompany.negocios_trag.FabricaNegocios;
-import dtos.cotizacion.CotizacionActualizarDTO;
-import dtos.cotizacion.CotizacionDetalleDTO;
-import dtos.cotizacion.CotizacionResumenDTO;
-import dtos.insumocotizacion.InsumoCotizacionActualizarDTO;
-import dtos.insumos.InsumoResumenDTO;
-import excepciones.NegocioException;
+import dtos.quote.QuoteSummaryDTO;
+import dtos.quote.QuoteDetailDTO;
+import dtos.quote.QuoteUpdateDTO;
+import dtos.supply.SupplySummaryDTO;
+import dtos.quoteSupply.QuoteSupplyUpdateDTO;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import presentacion.fabrica.FabricaNegocios;
 import java.util.List;
 import java.util.stream.Collectors;
 import presentacion.borradores.BorradorCotizacion;
@@ -25,23 +24,23 @@ import presentacion.interfaces.IControlCotizaciones;
 /**
  *
  * Archivo: ControlConsultarCotizaciones.java
- * 
+ *
  * @author Ariel Eduardo Borbón Izaguirre - 253080
  * @author Sebastián Bórquez Huerta - 253080
+ * @author Chris Fitch Lopez - 252379
  * @author Yuri Germán García López - 253080
  * @author Manuel Romo López - 253080
- * 
+ *
  */
 public class ControlConsultarCotizaciones implements IControlConsultarCotizaciones {
 
     private final IAdministradorCotizaciones administradorCotizaciones;
     private final IAdministradorInsumos administradorInsumos;
-    
+
     private IVistaHistorialCotizaciones vistaHistorialCotizaciones;
     private IVistaConsultaCotizacion vistaConsultaCotizacion;
-    
+
     private BorradorCotizacion borradorCotizacion;
-    
     private IControlCotizaciones controlCotizaciones;
 
     public ControlConsultarCotizaciones() {
@@ -52,92 +51,72 @@ public class ControlConsultarCotizaciones implements IControlConsultarCotizacion
     public void setControlCotizaciones(IControlCotizaciones controlCotizaciones) {
         this.controlCotizaciones = controlCotizaciones;
     }
-    
+
     @Override
     public void iniciar() {
         this.vistaHistorialCotizaciones = FabricaVistas.obtenerVistaHistorialCotizaciones(this);
-        
+
         // Al arrancar la pantalla, traemos todas las cotizaciones sin filtros
         buscarCotizaciones(null, null, null, "Todos");
-        
+
         this.vistaHistorialCotizaciones.mostrar();
     }
 
     @Override
     public void buscarCotizaciones(String nombreCliente, LocalDateTime fechaInicio, LocalDateTime fechaFin, String estado) {
         try {
-
-            List<CotizacionResumenDTO> listaFiltrada = administradorCotizaciones.obtenerTodasCotizaciones();
+            List<QuoteSummaryDTO> lista = administradorCotizaciones.obtenerTodasCotizaciones();
 
             if (nombreCliente != null && !nombreCliente.trim().isEmpty()) {
-                String busquedaLower = nombreCliente.trim().toLowerCase();
-                listaFiltrada = listaFiltrada.stream()
+                String busqueda = nombreCliente.trim().toLowerCase();
+                lista = lista.stream()
                         .filter(c -> {
-                            String nom = c.getNombreCliente() != null ? c.getNombreCliente().toLowerCase() : "";
-                            String ape = c.getApellidoPaternoCliente() != null ? c.getApellidoPaternoCliente().toLowerCase() : "";
-                            return nom.contains(busquedaLower) || ape.contains(busquedaLower);
+                            String nom = c.getCustomerFirstName() != null ? c.getCustomerFirstName().toLowerCase() : "";
+                            String ape = c.getCustomerLastName() != null ? c.getCustomerLastName().toLowerCase() : "";
+                            return nom.contains(busqueda) || ape.contains(busqueda);
                         })
                         .collect(Collectors.toList());
             }
 
             if (fechaInicio != null || fechaFin != null) {
-                
-                final LocalDateTime inicioAjustada = (fechaInicio != null) 
-                        ? fechaInicio.withHour(0).withMinute(0).withSecond(0).withNano(0) 
-                        : null;
+                final LocalDateTime inicioAjustada = (fechaInicio != null) ? fechaInicio.withHour(0).withMinute(0).withSecond(0).withNano(0) : null;
+                final LocalDateTime finAjustada = (fechaFin != null) ? fechaFin.withHour(23).withMinute(59).withSecond(59).withNano(999999999) : null;
 
-                final LocalDateTime finAjustada = (fechaFin != null) 
-                        ? fechaFin.withHour(23).withMinute(59).withSecond(59).withNano(999999999) 
-                        : null;
-
-                listaFiltrada = listaFiltrada.stream()
+                lista = lista.stream()
                         .filter(c -> {
-                            if (c.getFechaCreacion() == null) return false;
                             
-                            boolean cumpleInicio = (inicioAjustada == null) || !c.getFechaCreacion().isBefore(inicioAjustada);
-                            boolean cumpleFin = (finAjustada == null) || !c.getFechaCreacion().isAfter(finAjustada);
-                            
+                            if (c.getCreationDate() == null) { 
+                                return false;
+                            }
+                            boolean cumpleInicio = (inicioAjustada == null) || !c.getCreationDate().isBefore(inicioAjustada);
+                            boolean cumpleFin = (finAjustada == null) || !c.getCreationDate().isAfter(finAjustada);
                             return cumpleInicio && cumpleFin;
                         })
                         .collect(Collectors.toList());
             }
 
             if (estado != null && !estado.equalsIgnoreCase("Todos") && !estado.isEmpty()) {
-                listaFiltrada = listaFiltrada.stream()
-                        .filter(c -> c.getEstadoCotizacion() != null && 
-                                     c.getEstadoCotizacion().name().equalsIgnoreCase(estado))
+                lista = lista.stream()
+                        .filter(c -> c.getStatus() != null && c.getStatus().name().equalsIgnoreCase(estado))
                         .collect(Collectors.toList());
             }
-            
-            listaFiltrada.forEach(c -> {
 
-                if (c.getEstadoCotizacion() != null && c.getEstadoCotizacion().name().equalsIgnoreCase("ACTIVA")) {
-                    
-                    
-                    if (c.getInsumosCotizacion() != null) {
-                        c.getInsumosCotizacion().removeIf(insumo -> !insumo.isActivo());
-                    }
-                }
-            });
-
-            vistaHistorialCotizaciones.mostrarCotizaciones(listaFiltrada);
+            vistaHistorialCotizaciones.mostrarCotizaciones(lista); 
 
         } catch (Exception ex) {
             vistaHistorialCotizaciones.mostrarMensajeRapido("Error al filtrar: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
-    
+
     @Override
     public void cancelarCotizacion(Long idCotizacion) {
-        
         try {
             administradorCotizaciones.eliminarCotizacion(idCotizacion);
             buscarCotizaciones(null, null, null, "Todos");
-        } catch (NegocioException ex) {
+        } catch (BusinessException ex) {
             vistaHistorialCotizaciones.mostrarMensajeRapido("Error al deshabilitar la cotización");
         }
-        
     }
 
     @Override
@@ -145,37 +124,24 @@ public class ControlConsultarCotizaciones implements IControlConsultarCotizacion
         try {
             administradorCotizaciones.habilitarCotizacion(idCotizacion);
             buscarCotizaciones(null, null, null, "Todos");
-        } catch (NegocioException ex) {
+        } catch (BusinessException ex) {
             vistaHistorialCotizaciones.mostrarMensajeRapido("Error al habilitar la cotización");
         }
     }
 
     @Override
-    public void verDetalleCotizacion(CotizacionResumenDTO cotizacionSeleccionada) {
-        
-        this.vistaHistorialCotizaciones.ocultar();
-        
+    public void verDetalleCotizacion(QuoteSummaryDTO seleccionada) {
         try {
-            CotizacionDetalleDTO cotizacion = administradorCotizaciones.obtenerCotizacion(cotizacionSeleccionada.getId());
-
-
-            if (cotizacion.getEstado() != null && cotizacion.getEstado().name().equalsIgnoreCase("ACTIVA")) {
-                if (cotizacion.getInsumosCotizacion()!= null) {
-
-                    cotizacion.getInsumosCotizacion().removeIf(insumo -> !insumo.isActivo());
-                }
+            QuoteDetailDTO cotizacion = administradorCotizaciones.obtenerCotizacion(seleccionada.getId());
+            if (cotizacion.getStatus() != null && cotizacion.getStatus().name().equalsIgnoreCase("ACTIVA")) {
+                cotizacion.getQuoteSupplies().removeIf(insumo -> !insumo.isActive());
             }
-
             this.vistaConsultaCotizacion = FabricaVistas.obtenerVistaConsultarCotizacion(this);
-
+            this.vistaConsultaCotizacion.cargarDetalleCotizacion(cotizacion);
             this.vistaConsultaCotizacion.mostrar();
-
-            this.vistaConsultaCotizacion.cargarCotizacionSeleccionada(cotizacion);
-
-        } catch (NegocioException ex) {
+        } catch (BusinessException ex) {
             vistaHistorialCotizaciones.mostrarMensaje(ex.getMessage());
         }
-       
     }
 
     @Override
@@ -183,19 +149,18 @@ public class ControlConsultarCotizaciones implements IControlConsultarCotizacion
         vistaHistorialCotizaciones.ocultar();
         controlCotizaciones.administrarCotizaciones();
     }
-    
+
     @Override
     public void volverConsultarCotizacion() {
         vistaConsultaCotizacion.ocultar();
         vistaHistorialCotizaciones.mostrar();
     }
-    
+
     @Override
     public void cancelarConsultarCotizacion() {
         vistaConsultaCotizacion.ocultar();
         controlCotizaciones.administrarCotizaciones();
     }
-
 
     @Override
     public void guardarCambioCotizacion(BorradorCotizacion cotizacion) {
@@ -205,72 +170,66 @@ public class ControlConsultarCotizaciones implements IControlConsultarCotizacion
     @Override
     public void buscarInsumosNombre(String nombreInsumo) {
         try {
-            List<InsumoResumenDTO> insumos = administradorInsumos.obtenerInsumosNombre(nombreInsumo);
-            
+            List<SupplySummaryDTO> insumos = administradorInsumos.obtenerInsumosNombre(nombreInsumo);
             vistaConsultaCotizacion.actualizarSugerencias(insumos);
-            
-        } catch (NegocioException e) {
+        } catch (BusinessException e) {
             vistaConsultaCotizacion.mostrarMensaje(e.getMessage());
         }
     }
+    
 
     @Override
     public void agregarInsumo(String nombre) {
         try {
-            List<InsumoResumenDTO> insumos = administradorInsumos.obtenerInsumosNombre(nombre);
-            
-            for(InsumoResumenDTO insumo: insumos){
-                if(insumo.getNombre().equals(nombre)){
+            List<SupplySummaryDTO> insumos = administradorInsumos.obtenerInsumosNombre(nombre);
+            for (SupplySummaryDTO insumo : insumos) {
+                if (insumo.getName().equals(nombre)) {
                     vistaConsultaCotizacion.agregarInsumoTabla(insumo);
                 }
             }
-            
-        } catch (NegocioException e) {
+        } catch (BusinessException e) {
             vistaConsultaCotizacion.mostrarMensaje(e.getMessage());
         }
     }
 
     @Override
     public void actualizarCotizacion() {
-
         if (borradorCotizacion == null) {
             vistaConsultaCotizacion.mostrarMensaje("No hay cambios pendientes para guardar.");
             return;
         }
 
-        List<InsumoCotizacionActualizarDTO> insumosCotizacion = new ArrayList<>();
-        
-        try {
+        List<QuoteSupplyUpdateDTO> insumosCotizacion = new ArrayList<>();
 
-            CotizacionDetalleDTO cotizacionExistente = administradorCotizaciones.obtenerCotizacion(borradorCotizacion.getId());
-        
-            for (BorradorInsumoCotizacion borradorInsumo: borradorCotizacion.getBorradoresInsumoCotizacion()) {
-                insumosCotizacion.add(new InsumoCotizacionActualizarDTO(
-                    borradorInsumo.getCantidad(), 
-                    borradorInsumo.getCosto(), 
-                    borradorCotizacion.getId(),
-                    borradorInsumo.getIdInsumo()
+        try {
+            QuoteDetailDTO cotizacionExistente = administradorCotizaciones.obtenerCotizacion(borradorCotizacion.getId());
+
+            for (BorradorInsumoCotizacion borradorInsumo : borradorCotizacion.getBorradoresInsumoCotizacion()) {
+                insumosCotizacion.add(new QuoteSupplyUpdateDTO(
+                        borradorInsumo.getCantidad(),
+                        borradorInsumo.getCosto(),
+                        borradorCotizacion.getId(),
+                        borradorInsumo.getIdInsumo()
                 ));
             }
 
-            CotizacionActualizarDTO cotizacionActualizar = new CotizacionActualizarDTO(
-                borradorCotizacion.getId(), 
-                borradorCotizacion.getCostoManoObra(), 
-                cotizacionExistente.getDiagnosticoGeneral(), 
-                cotizacionExistente.getEstadoAutomovil(),
-                insumosCotizacion
+            QuoteUpdateDTO cotizacionActualizar = new QuoteUpdateDTO( // error "cannot find symbol"
+                    borradorCotizacion.getId(),
+                    borradorCotizacion.getCostoManoObra(),
+                    cotizacionExistente.getDiagnostic(), // error "cannot find symbol"
+                    cotizacionExistente.getVehicleState(), // error "cannot find symbol"
+                    insumosCotizacion 
             );
 
-            CotizacionDetalleDTO cotizacionActualizada = administradorCotizaciones.actualizarCotizacion(cotizacionActualizar);
+            QuoteDetailDTO cotizacionActualizada = administradorCotizaciones.actualizarCotizacion(cotizacionActualizar);
 
             if (cotizacionActualizada != null) {
                 vistaConsultaCotizacion.mostrarMensajeExito();
             }
 
-        } catch (NegocioException ex) {
+        } catch (BusinessException ex) {
             vistaConsultaCotizacion.mostrarMensaje(ex.getMessage());
         } catch (Exception e) {
-            // Captura errores inesperados para que no se cierre la app
             vistaConsultaCotizacion.mostrarMensaje("Ocurrió un error inesperado al actualizar.");
             e.printStackTrace();
         }
@@ -278,10 +237,29 @@ public class ControlConsultarCotizaciones implements IControlConsultarCotizacion
 
     @Override
     public void aceptarExitoActualizacionCotizacion() {
-        
         vistaConsultaCotizacion.ocultar();
         controlCotizaciones.administrarCotizaciones();
     }
 
 
+    @Override
+    public void seleccionarCotizacion(QuoteSummaryDTO cotizacion) {
+        // Implementación requerida por la interfaz
+    }
+
+    @Override
+    public void atrasPrincipal() {
+        // Implementación requerida por la interfaz
+    }
+
+    @Override
+    public void atrasHistorial() {
+        // Implementación requerida por la interfaz
+    }
+
+    @Override
+    public void guardarCambiosCotizacion(BorradorCotizacion cotizacion) {
+        // Implementación requerida por la interfaz
+    }
 }
+

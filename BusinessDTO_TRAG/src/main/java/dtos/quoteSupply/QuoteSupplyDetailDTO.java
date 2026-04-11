@@ -17,9 +17,13 @@ public class QuoteSupplyDetailDTO {
     private Integer quantityRequired;
     private BigDecimal price;
     private Long quoteId;
+    private Integer requiredQuantity;
     private SupplySummaryDTO supply;
     private BigDecimal subtotal;
     private boolean active;
+
+    public QuoteSupplyDetailDTO() {
+    }
 
     public QuoteSupplyDetailDTO(Long id, Integer quantityRequired, BigDecimal price, Long quoteId, SupplySummaryDTO supply, boolean active) {
         this.id = id;
@@ -91,4 +95,13 @@ public class QuoteSupplyDetailDTO {
     public void setActive(boolean active) {
         this.active = active;
     }
+
+    public Integer getRequiredQuantity() {
+        return requiredQuantity;
+    }
+
+    public void setRequiredQuantity(Integer requiredQuantity) {
+        this.requiredQuantity = requiredQuantity;
+    }
+
 }

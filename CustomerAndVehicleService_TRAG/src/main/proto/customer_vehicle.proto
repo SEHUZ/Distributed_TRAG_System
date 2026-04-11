@@ -7,8 +7,18 @@ option java_outer_classname = "CustomerVehicleProto";
 service CustomerVehicleServiceGrpc {
   rpc GetCustomerSummary (CustomerRequest) returns (CustomerSummaryResponse);
   rpc GetVehicleSummary (VehicleRequest) returns (VehicleSummaryResponse);
+  // Add the new RPC method here
+  rpc GetAllCustomers (EmptyRequest) returns (CustomerListResponse); 
 }
 
+// Request without parameters
+message EmptyRequest {
+}
+
+// Response containing a list of customers
+message CustomerListResponse {
+  repeated CustomerSummaryResponse customers = 1;
+}
 
 message CustomerRequest {
   int64 customer_id = 1;

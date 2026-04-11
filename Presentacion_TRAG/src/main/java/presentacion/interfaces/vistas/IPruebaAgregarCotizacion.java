@@ -10,8 +10,7 @@ import presentacion.interfaces.IVista;
  * 
  * @author Ariel Eduardo Borbón Izaguirre - 253080
  * @author Sebastián Bórquez Huerta - 253080
- * @author Yuri Germán García López - 253080
- * @author Manuel Romo López - 253080
+ * @author Chris Fitch Lopez - 252379
  * 
  */
 public interface IPruebaAgregarCotizacion extends IVista{

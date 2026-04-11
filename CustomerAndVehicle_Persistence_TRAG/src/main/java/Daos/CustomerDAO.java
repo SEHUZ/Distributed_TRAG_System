@@ -4,14 +4,15 @@
  */
 package Daos;
 
+import Enums.CustomerStatus;
+import javax.persistence.EntityTransaction;
 import Connection.Connection;
 import Entitys.Customer;
-import Enums.CustomerStatus;
 import Exception.PersistenceException;
 import Interfaces.ICustomerDAO;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -74,16 +75,14 @@ public class CustomerDAO implements ICustomerDAO {
     public List<Customer> getAllCustomers() throws PersistenceException {
         EntityManager em = Connection.crearConexion();
         try {
-            String jpql = "SELECT c FROM Customer c WHERE c.status = :status";
-
-            return em.createQuery(jpql, Customer.class)
-                     .setParameter("status", CustomerStatus.ENABLED)
-                     .getResultList();
-
+            TypedQuery<Customer> query = em.createQuery("SELECT c FROM Customer c", Customer.class);
+            return query.getResultList();
         } catch (Exception e) {
-            throw new PersistenceException(ERROR_FIND_ALL, e);
+            throw new PersistenceException("Error fetching all customers: " + e.getMessage());
         } finally {
-            em.close();
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
         }
     }
 

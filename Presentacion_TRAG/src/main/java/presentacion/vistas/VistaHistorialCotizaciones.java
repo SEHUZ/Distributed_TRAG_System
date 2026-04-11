@@ -2,8 +2,8 @@
 package presentacion.vistas;
 
 import com.toedter.calendar.JDateChooser;
-import dtos.cotizacion.CotizacionResumenDTO;
-import enums.EstadoCotizacionNegocios;
+import enums.QuoteStatusBusiness;
+import dtos.quote.QuoteSummaryDTO;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -38,6 +38,7 @@ import presentacion.interfaces.IControlConsultarCotizaciones;
  * 
  * @author Ariel Eduardo Borbón Izaguirre - 253080
  * @author Sebastián Bórquez Huerta - 253080
+ * @author Chris Fitch Lopez - 252379
  * @author Yuri Germán García López - 253080
  * @author Manuel Romo López - 253080
  * 
@@ -141,9 +142,9 @@ public class VistaHistorialCotizaciones extends JFrame implements IVistaHistoria
 
         panelFiltros.add(panelCentro, BorderLayout.CENTER);
     }
-
+    
     @Override
-    public void mostrarCotizaciones(List<CotizacionResumenDTO> cotizaciones) {
+    public void cargarCotizaciones(List<QuoteSummaryDTO> cotizaciones) {
 
         contenedorTarjetas.removeAll();
 
@@ -164,7 +165,7 @@ public class VistaHistorialCotizaciones extends JFrame implements IVistaHistoria
             return;
         }
 
-        for (CotizacionResumenDTO c : cotizaciones) {
+        for (QuoteSummaryDTO c : cotizaciones) {
             contenedorTarjetas.add(crearCardCotizacion(c));
         }
 
@@ -172,7 +173,37 @@ public class VistaHistorialCotizaciones extends JFrame implements IVistaHistoria
         contenedorTarjetas.repaint();
     }
 
-    private JPanel crearCardCotizacion(CotizacionResumenDTO c) {
+    @Override
+    public void mostrarCotizaciones(List<QuoteSummaryDTO> cotizaciones) {
+
+        contenedorTarjetas.removeAll();
+
+        if (cotizaciones == null || cotizaciones.isEmpty()) {
+
+            JPanel panelVacio = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 50));
+            panelVacio.setBackground(new Color(245, 245, 245));
+
+            JLabel lblVacio = new JLabel("No se encontraron cotizaciones.");
+            lblVacio.setFont(new Font("Segoe UI", Font.BOLD, 18));
+            lblVacio.setForeground(new Color(150, 150, 150));
+
+            panelVacio.add(lblVacio);
+            contenedorTarjetas.add(panelVacio);
+
+            contenedorTarjetas.revalidate();
+            contenedorTarjetas.repaint();
+            return;
+        }
+
+        for (QuoteSummaryDTO c : cotizaciones) {
+            contenedorTarjetas.add(crearCardCotizacion(c));
+        }
+
+        contenedorTarjetas.revalidate();
+        contenedorTarjetas.repaint();
+    }
+
+    private JPanel crearCardCotizacion(QuoteSummaryDTO c) {
         JPanel card = new JPanel(new BorderLayout());
         card.setBackground(new Color(245, 245, 245));
         card.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
@@ -201,9 +232,10 @@ public class VistaHistorialCotizaciones extends JFrame implements IVistaHistoria
         panelNombre.setBackground(Color.WHITE);
         panelNombre.setPreferredSize(new Dimension(160, 50));
 
-        JLabel lblNombre = new JLabel(c.getNombreCliente() != null ? c.getNombreCliente() : "");
+        // CORRECCIÓN: Uso de getters en inglés de QuoteSummaryDTO
+        JLabel lblNombre = new JLabel(c.getCustomerFirstName() != null ? c.getCustomerFirstName() : "");
         lblNombre.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        JLabel lblApellido = new JLabel(c.getApellidoPaternoCliente() != null ? c.getApellidoPaternoCliente() : "");
+        JLabel lblApellido = new JLabel(c.getCustomerLastName() != null ? c.getCustomerLastName() : "");
         lblApellido.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         lblApellido.setForeground(Color.GRAY);
 
@@ -222,9 +254,10 @@ public class VistaHistorialCotizaciones extends JFrame implements IVistaHistoria
         panelAutoText.setBackground(Color.WHITE);
         panelAutoText.setPreferredSize(new Dimension(160, 50));
 
-        JLabel lblMarca = new JLabel(c.getMarcaAutomovil() != null ? c.getMarcaAutomovil() : "");
+        // CORRECCIÓN: Getters de vehículo
+        JLabel lblMarca = new JLabel(c.getVehicleBrand() != null ? c.getVehicleBrand() : "");
         lblMarca.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        JLabel lblModelo = new JLabel(c.getModeloAutomovil() != null ? c.getModeloAutomovil() : "");
+        JLabel lblModelo = new JLabel(c.getVehicleModel() != null ? c.getVehicleModel() : "");
         lblModelo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         lblModelo.setForeground(Color.GRAY);
 
@@ -233,7 +266,8 @@ public class VistaHistorialCotizaciones extends JFrame implements IVistaHistoria
         panelInfo.add(panelAutoText, gbc);
 
         gbc.gridx = 4;
-        String fecha = (c.getFechaCreacion() != null) ? c.getFechaCreacion().toLocalDate().toString() : "N/A";
+        // CORRECCIÓN: Getter de fecha (getCreatedAt)
+        String fecha = (c.getCreatedAt() != null) ? c.getCreatedAt().toLocalDate().toString() : "N/A";
         JLabel lblFecha = new JLabel(fecha);
         lblFecha.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         panelInfo.add(lblFecha, gbc);
@@ -241,12 +275,15 @@ public class VistaHistorialCotizaciones extends JFrame implements IVistaHistoria
         gbc.gridx = 5;
         gbc.weightx = 1.0; 
         gbc.anchor = GridBagConstraints.EAST;
-        String precio = (c.getPrecioTotal() != null) ? "$" + c.getPrecioTotal() : "$0.00";
+        // CORRECCIÓN: Getter de precio (getTotalPrice)
+        String precio = (c.getTotalPrice() != null) ? "$" + c.getTotalPrice() : "$0.00";
         JLabel lblPrecio = new JLabel(precio);
         lblPrecio.setFont(new Font("Segoe UI", Font.BOLD, 16));
         panelInfo.add(lblPrecio, gbc);
 
-        boolean estaActiva = c.getEstadoCotizacion().name().equals("ACTIVA");
+        // CORRECCIÓN: Chequeo contra el Enum QuoteStatusBusiness
+        boolean estaActiva = c.getStatus() != null && c.getStatus().name().equals("ENABLE");
+        
         gbc.gridx = 6;
         gbc.weightx = 0;
         gbc.insets = new Insets(0, 15, 0, 5);
@@ -269,7 +306,7 @@ public class VistaHistorialCotizaciones extends JFrame implements IVistaHistoria
                 "Confirmar", JOptionPane.YES_NO_OPTION);
             if (confirmacion == JOptionPane.YES_OPTION) {
                 if (estaActiva) control.cancelarCotizacion(c.getId());
-                else control.activiarCotizacion(c.getId());
+                else control.activiarCotizacion(c.getId()); // Ojo aquí, el método en tu interfaz se llama "activiarCotizacion"
                 btnBuscar.doClick(); 
             }
         });
@@ -375,9 +412,9 @@ public class VistaHistorialCotizaciones extends JFrame implements IVistaHistoria
             int seleccion = cmbEstado.getSelectedIndex();
             
             if (seleccion == 1) {
-                estadoStr = EstadoCotizacionNegocios.ACTIVA.name();
+                estadoStr = QuoteStatusBusiness.ENABLE.name();
             } else if (seleccion == 2) {
-                estadoStr = EstadoCotizacionNegocios.CANCELADA.name();
+                estadoStr = QuoteStatusBusiness.CANCELLED.name();
             }
 
             control.buscarCotizaciones(
@@ -501,4 +538,5 @@ public class VistaHistorialCotizaciones extends JFrame implements IVistaHistoria
     public void mostrarMensaje(String mensajeError) {
         JOptionPane.showMessageDialog(this, mensajeError, "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
     }
+
 }

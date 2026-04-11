@@ -12,6 +12,7 @@ import presentacion.interfaces.vistas.IVistaDiagnosticoEstado;
  * 
  * @author Ariel Eduardo Borbón Izaguirre - 253080
  * @author Sebastián Bórquez Huerta - 253080
+ * @author Chris Fitch Lopez - 252379
  * @author Yuri Germán García López - 253080
  * @author Manuel Romo López - 253080
  * 
@@ -39,7 +40,6 @@ public class VistaDiagnosticoEstado extends JFrame implements IVistaDiagnosticoE
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        panelEncabezado1 = new presentacion.vistas.PanelEncabezado();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -57,7 +57,6 @@ public class VistaDiagnosticoEstado extends JFrame implements IVistaDiagnosticoE
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1100, 700));
-        getContentPane().add(panelEncabezado1, java.awt.BorderLayout.PAGE_START);
 
         jPanel1.setBackground(new java.awt.Color(255, 204, 204));
         jPanel1.setLayout(new java.awt.GridBagLayout());
@@ -277,7 +276,6 @@ public class VistaDiagnosticoEstado extends JFrame implements IVistaDiagnosticoE
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private presentacion.vistas.PanelEncabezado panelEncabezado1;
     // End of variables declaration//GEN-END:variables
 
     @Override

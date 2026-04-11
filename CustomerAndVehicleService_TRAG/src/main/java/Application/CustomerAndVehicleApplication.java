@@ -14,7 +14,9 @@ import org.springframework.context.annotation.ComponentScan;
 
 /**
  *
- * @author sonic
+ * @author Ariel Eduardo Borbón Izaguirre - 253080
+ * @author Sebastián Bórquez Huerta - 253080
+ * @author Chris Fitch Lopez - 252379
  */
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 @ComponentScan(basePackages = {"Controller", "Service"})

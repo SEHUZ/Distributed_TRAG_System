@@ -1,82 +1,91 @@
-
-
 package com.mycompany.administradorcotizaciones_trag;
 
-import dtos.cotizacion.CotizacionActualizarDTO;
-import dtos.cotizacion.CotizacionResumenDTO;
-import dtos.cotizacion.CotizacionAgregarDTO;
-import dtos.cotizacion.CotizacionDetalleDTO;
-import excepciones.NegocioException;
+
+import dtos.quote.QuoteUpdateDTO;
+import dtos.quote.QuoteSummaryDTO;
+import dtos.quote.QuoteAddDTO;
+import dtos.quote.QuoteDetailDTO;
+import Exception.BusinessException;
 import java.time.LocalDateTime;
 import java.util.List;
+import Daos.QuoteDAO; 
+import Connection.Connection;
+
 
 /**
  *
  * Archivo: FAdministradorCotizaciones.java
- * 
  * @author Ariel Eduardo Borbón Izaguirre - 253080
  * @author Sebastián Bórquez Huerta - 253080
- * @author Yuri Germán García López - 253080
- * @author Manuel Romo López - 253080
- * 
- */
-public class FAdministradorCotizaciones implements IAdministradorCotizaciones{
-    
+ * @author Chris Fitch Lopez - 252379
+ * */
+
+public class FAdministradorCotizaciones implements IAdministradorCotizaciones {
     private final AdministradorCotizaciones administradorCotizaciones;
+    
+    public FAdministradorCotizaciones() {
+        this.administradorCotizaciones = new AdministradorCotizaciones(new QuoteDAO());
+    }
 
     public FAdministradorCotizaciones(AdministradorCotizaciones administradorCotizaciones) {
         this.administradorCotizaciones = administradorCotizaciones;
     }
 
-    /**
-     * Fachada para la creación de una cotización.
-     * @param dto Datos de la cotización desde la vista.
-     * @return Cotización procesada y validada.
-     */
     @Override
-    public CotizacionDetalleDTO crearCotizacion(CotizacionAgregarDTO dto) throws NegocioException{
+    public QuoteDetailDTO crearCotizacion(QuoteAddDTO dto) throws BusinessException{
         return administradorCotizaciones.crearCotizacion(dto);
     }
 
+
     @Override
-    public CotizacionDetalleDTO obtenerCotizacion(Long idCotizacion) throws NegocioException {
+    public QuoteDetailDTO obtenerCotizacion(Long idCotizacion) throws BusinessException {
         return administradorCotizaciones.obtenerCotizacion(idCotizacion);
     }
+
     
+
     @Override
-    public CotizacionResumenDTO obtenerResumenCotizacion(Long idCotizacion) throws NegocioException {
+    public QuoteSummaryDTO obtenerResumenCotizacion(Long idCotizacion) throws BusinessException {
         return administradorCotizaciones.obtenerResumenCotizacion(idCotizacion);
     }
+
     
+
     @Override
-    public List<CotizacionResumenDTO> obtenerTodasCotizaciones() throws NegocioException {
+    public List<QuoteSummaryDTO> obtenerTodasCotizaciones() throws BusinessException {
         return administradorCotizaciones.obtenerTodasCotizaciones();
     }
+
     
+
     @Override
-    public List<CotizacionResumenDTO> obtenerCotizacionesNombre(String nombreCliente) throws NegocioException {
-        return administradorCotizaciones.obtenerCotizacionesNombreCliente(nombreCliente);
+    public List<QuoteSummaryDTO> obtenerCotizacionesPorIdsClientes(List<Long> customerIds) throws BusinessException {
+        return administradorCotizaciones.obtenerCotizacionesPorIdsClientes(customerIds);
     }
+
     
+
     @Override
-    public List<CotizacionResumenDTO> obtenerCotizacionesFecha(LocalDateTime fechaInicio, LocalDateTime fechaFin) throws NegocioException {
+    public List<QuoteSummaryDTO> obtenerCotizacionesFecha(LocalDateTime fechaInicio, LocalDateTime fechaFin) throws BusinessException {
         return administradorCotizaciones.obtenerCotizacionesFecha(fechaInicio, fechaFin);
     }
+
     
+
     @Override
-    public CotizacionDetalleDTO actualizarCotizacion(CotizacionActualizarDTO dto) throws NegocioException{
+    public QuoteDetailDTO actualizarCotizacion(QuoteUpdateDTO dto) throws BusinessException{
         return administradorCotizaciones.actualizarCotizacion(dto);
     }
 
+
     @Override
-    public CotizacionDetalleDTO eliminarCotizacion(Long idCotizacion) throws NegocioException {
+    public QuoteDetailDTO eliminarCotizacion(Long idCotizacion) throws BusinessException {
         return administradorCotizaciones.eliminarCotizacion(idCotizacion);
     }
 
+
     @Override
-    public CotizacionDetalleDTO habilitarCotizacion(Long idCotizacion) throws NegocioException {
+    public QuoteDetailDTO habilitarCotizacion(Long idCotizacion) throws BusinessException {
         return administradorCotizaciones.habilitarCotizacion(idCotizacion);
     }
-
-
 }

@@ -77,6 +77,37 @@ public final class CustomerVehicleServiceGrpcGrpc {
     return getGetVehicleSummaryMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.mycompany.grpc.EmptyRequest,
+      com.mycompany.grpc.CustomerListResponse> getGetAllCustomersMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetAllCustomers",
+      requestType = com.mycompany.grpc.EmptyRequest.class,
+      responseType = com.mycompany.grpc.CustomerListResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.mycompany.grpc.EmptyRequest,
+      com.mycompany.grpc.CustomerListResponse> getGetAllCustomersMethod() {
+    io.grpc.MethodDescriptor<com.mycompany.grpc.EmptyRequest, com.mycompany.grpc.CustomerListResponse> getGetAllCustomersMethod;
+    if ((getGetAllCustomersMethod = CustomerVehicleServiceGrpcGrpc.getGetAllCustomersMethod) == null) {
+      synchronized (CustomerVehicleServiceGrpcGrpc.class) {
+        if ((getGetAllCustomersMethod = CustomerVehicleServiceGrpcGrpc.getGetAllCustomersMethod) == null) {
+          CustomerVehicleServiceGrpcGrpc.getGetAllCustomersMethod = getGetAllCustomersMethod =
+              io.grpc.MethodDescriptor.<com.mycompany.grpc.EmptyRequest, com.mycompany.grpc.CustomerListResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetAllCustomers"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.mycompany.grpc.EmptyRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.mycompany.grpc.CustomerListResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new CustomerVehicleServiceGrpcMethodDescriptorSupplier("GetAllCustomers"))
+              .build();
+        }
+      }
+    }
+    return getGetAllCustomersMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -138,6 +169,16 @@ public final class CustomerVehicleServiceGrpcGrpc {
         io.grpc.stub.StreamObserver<com.mycompany.grpc.VehicleSummaryResponse> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetVehicleSummaryMethod(), responseObserver);
     }
+
+    /**
+     * <pre>
+     * Add the new RPC method here
+     * </pre>
+     */
+    default void getAllCustomers(com.mycompany.grpc.EmptyRequest request,
+        io.grpc.stub.StreamObserver<com.mycompany.grpc.CustomerListResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetAllCustomersMethod(), responseObserver);
+    }
   }
 
   /**
@@ -182,6 +223,17 @@ public final class CustomerVehicleServiceGrpcGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetVehicleSummaryMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     * <pre>
+     * Add the new RPC method here
+     * </pre>
+     */
+    public void getAllCustomers(com.mycompany.grpc.EmptyRequest request,
+        io.grpc.stub.StreamObserver<com.mycompany.grpc.CustomerListResponse> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getGetAllCustomersMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -212,6 +264,16 @@ public final class CustomerVehicleServiceGrpcGrpc {
     public com.mycompany.grpc.VehicleSummaryResponse getVehicleSummary(com.mycompany.grpc.VehicleRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetVehicleSummaryMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Add the new RPC method here
+     * </pre>
+     */
+    public com.mycompany.grpc.CustomerListResponse getAllCustomers(com.mycompany.grpc.EmptyRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetAllCustomersMethod(), getCallOptions(), request);
     }
   }
 
@@ -246,10 +308,22 @@ public final class CustomerVehicleServiceGrpcGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetVehicleSummaryMethod(), getCallOptions()), request);
     }
+
+    /**
+     * <pre>
+     * Add the new RPC method here
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.mycompany.grpc.CustomerListResponse> getAllCustomers(
+        com.mycompany.grpc.EmptyRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getGetAllCustomersMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_GET_CUSTOMER_SUMMARY = 0;
   private static final int METHODID_GET_VEHICLE_SUMMARY = 1;
+  private static final int METHODID_GET_ALL_CUSTOMERS = 2;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -275,6 +349,10 @@ public final class CustomerVehicleServiceGrpcGrpc {
         case METHODID_GET_VEHICLE_SUMMARY:
           serviceImpl.getVehicleSummary((com.mycompany.grpc.VehicleRequest) request,
               (io.grpc.stub.StreamObserver<com.mycompany.grpc.VehicleSummaryResponse>) responseObserver);
+          break;
+        case METHODID_GET_ALL_CUSTOMERS:
+          serviceImpl.getAllCustomers((com.mycompany.grpc.EmptyRequest) request,
+              (io.grpc.stub.StreamObserver<com.mycompany.grpc.CustomerListResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -308,6 +386,13 @@ public final class CustomerVehicleServiceGrpcGrpc {
               com.mycompany.grpc.VehicleRequest,
               com.mycompany.grpc.VehicleSummaryResponse>(
                 service, METHODID_GET_VEHICLE_SUMMARY)))
+        .addMethod(
+          getGetAllCustomersMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              com.mycompany.grpc.EmptyRequest,
+              com.mycompany.grpc.CustomerListResponse>(
+                service, METHODID_GET_ALL_CUSTOMERS)))
         .build();
   }
 
@@ -358,6 +443,7 @@ public final class CustomerVehicleServiceGrpcGrpc {
               .setSchemaDescriptor(new CustomerVehicleServiceGrpcFileDescriptorSupplier())
               .addMethod(getGetCustomerSummaryMethod())
               .addMethod(getGetVehicleSummaryMethod())
+              .addMethod(getGetAllCustomersMethod())
               .build();
         }
       }

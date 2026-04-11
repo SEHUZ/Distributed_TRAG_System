@@ -1,37 +1,32 @@
 package com.mycompany.administradorcotizaciones_trag;
 
-
-import dtos.cotizacion.CotizacionActualizarDTO;
-import dtos.cotizacion.CotizacionAgregarDTO;
-import dtos.cotizacion.CotizacionDetalleDTO;
-import dtos.cotizacion.CotizacionResumenDTO;
-import dtos.insumocotizacion.InsumoCotizacionDetalleDTO;
-import entidades.Cotizacion;
-import enums.EstadoCotizacionNegocios;
-import excepciones.NegocioException;
-import excepciones.PersistenciaException;
-import interfaces.ICotizacionesDAO;
+import dtos.quote.QuoteUpdateDTO;
+import dtos.quote.QuoteAddDTO;
+import dtos.quote.QuoteDetailDTO;
+import dtos.quote.QuoteSummaryDTO;
+import dtos.quoteSupply.QuoteSupplyDetailDTO;
+import Entitys.Quote;
+import Enums.QuoteStatus;
+import Exception.BusinessException;
+import Exception.PersistenceException;
+import Interfaces.IQuotesDAO;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import mappers.DTOMapeadores;
-import mappers.Mapeadores;
+import java.util.stream.Collectors;
+import mappers.DTOMappers;
+import mappers.EntityMappers;
 
 /**
- *
  * Archivo: AdministradorCotizaciones.java
- * 
  * @author Ariel Eduardo Borbón Izaguirre - 253080
  * @author Sebastián Bórquez Huerta - 253080
- * @author Yuri Germán García López - 253080
- * @author Manuel Romo López - 253080
- * 
+ * @author Chris Fitch Lopez - 252379
  */
 public class AdministradorCotizaciones {
 
-    private ICotizacionesDAO cotizacionesDAO;
+    private IQuotesDAO cotizacionesDAO;
 
     private static final int MAX_LONGITUD_ESTADO = 1000;
     private static final BigDecimal PRECIO_MAXIMO = new BigDecimal("99999999.99");
@@ -46,218 +41,183 @@ public class AdministradorCotizaciones {
     private static final String MENSAJE_ERROR_ACTUALIZAR_COTIZACION = "Error al actualizar la cotización";
     private static final String MENSAJE_ERROR_ELIMINAR_COTIZACION = "Error al eliminar la cotización";
 
-    public AdministradorCotizaciones(ICotizacionesDAO cotizacionesDAO) {
+    public AdministradorCotizaciones(IQuotesDAO cotizacionesDAO) {
         this.cotizacionesDAO = cotizacionesDAO;
     }
 
-    public CotizacionDetalleDTO crearCotizacion(CotizacionAgregarDTO dto) throws NegocioException {
-
+    public QuoteDetailDTO crearCotizacion(QuoteAddDTO dto) throws BusinessException {
         validarCotizacionAgregar(dto);
+        Quote cotizacionRegistrada = DTOMappers.toEntity(dto);
         
-        dto.setEstadoCotizacion(EstadoCotizacionNegocios.ACTIVA);
-
-        Cotizacion cotizacionRegistrada = DTOMapeadores.toEntity(dto);
-
-        try {
-            return Mapeadores.toDTODetalle(cotizacionesDAO.agregarCotizacion(cotizacionRegistrada));
-        } catch (PersistenciaException e) {
-            throw new NegocioException(MENSAJE_ERROR_CREAR_COTIZACION, e);
-
+        // Ensure default active status
+        if (cotizacionRegistrada.getStatus() == null) {
+            cotizacionRegistrada.setStatus(QuoteStatus.ENABLED);
         }
 
+        try {
+            Quote savedQuote = cotizacionesDAO.addQuote(cotizacionRegistrada);
+            return mapToQuoteDetailDTO(savedQuote);
+        } catch (PersistenceException e) {
+            throw new BusinessException(MENSAJE_ERROR_CREAR_COTIZACION, e);
+        }
     }
 
-    public CotizacionDetalleDTO obtenerCotizacion(Long idCotizacion) throws NegocioException {
-
+    public QuoteDetailDTO obtenerCotizacion(Long idCotizacion) throws BusinessException {
         if (idCotizacion == null) {
-            throw new NegocioException(MENSAJE_ID_COTIZACION_AUSENTE_OBTENER);
+            throw new BusinessException(MENSAJE_ID_COTIZACION_AUSENTE_OBTENER);
         }
 
         try {
-            CotizacionDetalleDTO cotizacionDetalle = Mapeadores.toDTODetalle(cotizacionesDAO.obtenerCotizacion(idCotizacion));
-            List<InsumoCotizacionDetalleDTO> insumosCotizacion = cotizacionDetalle.getInsumosCotizacion();
-
-            for (InsumoCotizacionDetalleDTO dto: insumosCotizacion) {
-                dto.setSubtotal(BigDecimal.valueOf(dto.getCantidadRequerida()).multiply(dto.getPrecio()));
-            }
-
-            return cotizacionDetalle;
-        } catch (PersistenciaException e) {
-            throw new NegocioException(MENSAJE_ERROR_OBTENER_COTIZACION, e);
+            Quote quote = cotizacionesDAO.getQuote(idCotizacion);
+            if (quote == null) return null;
+            return mapToQuoteDetailDTO(quote);
+        } catch (PersistenceException e) {
+            throw new BusinessException(MENSAJE_ERROR_OBTENER_COTIZACION, e);
         }
-
     }
     
-    public CotizacionResumenDTO obtenerResumenCotizacion(Long idCotizacion) throws NegocioException {
+    public QuoteSummaryDTO obtenerResumenCotizacion(Long idCotizacion) throws BusinessException {
         if (idCotizacion == null) {
-            throw new NegocioException(MENSAJE_ID_COTIZACION_AUSENTE_OBTENER);
+            throw new BusinessException(MENSAJE_ID_COTIZACION_AUSENTE_OBTENER);
         }
 
         try {
-            CotizacionResumenDTO cotizacionResumen = Mapeadores.toDTOResumen(cotizacionesDAO.obtenerCotizacion(idCotizacion));
-            List<InsumoCotizacionDetalleDTO> insumosCotizacion = cotizacionResumen.getInsumosCotizacion();
-
-            for (InsumoCotizacionDetalleDTO dto: insumosCotizacion) {
-                dto.setSubtotal(BigDecimal.valueOf(dto.getCantidadRequerida()).multiply(dto.getPrecio()));
-            }
-
-            return cotizacionResumen;
-        } catch (PersistenciaException e) {
-            throw new NegocioException(MENSAJE_ERROR_OBTENER_COTIZACION, e);
+            Quote quote = cotizacionesDAO.getQuote(idCotizacion);
+            if (quote == null) return null;
+            return mapToQuoteSummaryDTO(quote);
+        } catch (PersistenceException e) {
+            throw new BusinessException(MENSAJE_ERROR_OBTENER_COTIZACION, e);
         } 
     }
 
-    public List<CotizacionResumenDTO> obtenerTodasCotizaciones() throws NegocioException {
-
+    public List<QuoteSummaryDTO> obtenerTodasCotizaciones() throws BusinessException {
         try {
-            List<CotizacionResumenDTO> cotizaciones = Mapeadores.toDTOCotizaciones(cotizacionesDAO.obtenerTodasCotizaciones());
-
-            for (CotizacionResumenDTO cotizacion : cotizaciones) {
-
-                BigDecimal total = cotizacion.getPrecioManoObra().add(
-                        cotizacion.getInsumosCotizacion().stream().map(insumo -> {
-                            insumo.setSubtotal(insumo.getPrecio().multiply(BigDecimal.valueOf(insumo.getCantidadRequerida())));
-                            return insumo.getSubtotal();
-                        }).reduce(BigDecimal.ZERO, BigDecimal::add)
-                );
-
-                cotizacion.setPrecioTotal(total);
-
-            }
-
-            return cotizaciones;
-
-        } catch (PersistenciaException e) {
-            throw new NegocioException(MENSAJE_ERROR_OBTENER_TODAS_COTIZACIONES, e);
-        }
-
-    }
-    
-    public List<CotizacionResumenDTO> obtenerCotizacionesNombreCliente(String nombreCliente) throws NegocioException {
-        try {
-            List<CotizacionResumenDTO> cotizaciones = Mapeadores.toDTOCotizaciones(cotizacionesDAO.obtenerCotizacionesNombreCliente(nombreCliente));
-
-            for (CotizacionResumenDTO cotizacion : cotizaciones) {
-
-                BigDecimal total = cotizacion.getPrecioManoObra().add(
-                        cotizacion.getInsumosCotizacion().stream().map(insumo -> {
-                            insumo.setSubtotal(insumo.getPrecio().multiply(BigDecimal.valueOf(insumo.getCantidadRequerida())));
-                            return insumo.getSubtotal();
-                        }).reduce(BigDecimal.ZERO, BigDecimal::add)
-                );
-
-                cotizacion.setPrecioTotal(total);
-
-            }
-
-            return cotizaciones;
-
-        } catch (PersistenciaException e) {
-            throw new NegocioException(MENSAJE_ERROR_OBTENER_TODAS_COTIZACIONES, e);
+            List<Quote> quotes = cotizacionesDAO.getAllQuotes();
+            // Los mappers ahora calculan los totales y subtotales automáticamente!
+            return quotes.stream().map(this::mapToQuoteSummaryDTO).collect(Collectors.toList());
+        } catch (PersistenceException e) {
+            throw new BusinessException(MENSAJE_ERROR_OBTENER_TODAS_COTIZACIONES, e);
         }
     }
     
-    public List<CotizacionResumenDTO> obtenerCotizacionesFecha(LocalDateTime fechaInicio, LocalDateTime fechaFin) throws NegocioException {
+    public List<QuoteSummaryDTO> obtenerCotizacionesPorIdsClientes(List<Long> customerIds) throws BusinessException {
         try {
-            List<CotizacionResumenDTO> cotizaciones = Mapeadores.toDTOCotizaciones(cotizacionesDAO.obtenerCotizacionesFecha(fechaInicio, fechaFin));
-
-            for (CotizacionResumenDTO cotizacion : cotizaciones) {
-
-                BigDecimal total = cotizacion.getPrecioManoObra().add(
-                        cotizacion.getInsumosCotizacion().stream().map(insumo -> {
-                            insumo.setSubtotal(insumo.getPrecio().multiply(BigDecimal.valueOf(insumo.getCantidadRequerida())));
-                            return insumo.getSubtotal();
-                        }).reduce(BigDecimal.ZERO, BigDecimal::add)
-                );
-
-                cotizacion.setPrecioTotal(total);
-
-            }
-
-            return cotizaciones;
-
-        } catch (PersistenciaException e) {
-            throw new NegocioException(MENSAJE_ERROR_OBTENER_TODAS_COTIZACIONES, e);
+            List<Quote> quotes = cotizacionesDAO.getQuotesByCustomerIds(customerIds);
+            return quotes.stream().map(this::mapToQuoteSummaryDTO).collect(Collectors.toList());
+        } catch (PersistenceException e) {
+            throw new BusinessException(MENSAJE_ERROR_OBTENER_TODAS_COTIZACIONES, e);
+        }
+    }
+    
+    public List<QuoteSummaryDTO> obtenerCotizacionesFecha(LocalDateTime fechaInicio, LocalDateTime fechaFin) throws BusinessException {
+        try {
+            List<Quote> quotes = cotizacionesDAO.getQuotesByDate(fechaInicio, fechaFin);
+            return quotes.stream().map(this::mapToQuoteSummaryDTO).collect(Collectors.toList());
+        } catch (PersistenceException e) {
+            throw new BusinessException(MENSAJE_ERROR_OBTENER_TODAS_COTIZACIONES, e);
         }
     }
 
-    public CotizacionDetalleDTO actualizarCotizacion(CotizacionActualizarDTO dto) throws NegocioException {
-
+    public QuoteDetailDTO actualizarCotizacion(QuoteUpdateDTO dto) throws BusinessException {
         if (dto.getId() == null) {
-            throw new NegocioException(MENSAJE_ID_COTIZACION_AUSENTE_ACTUALIZAR);
+            throw new BusinessException(MENSAJE_ID_COTIZACION_AUSENTE_ACTUALIZAR);
         }
 
         validarCotizacionActualizar(dto);
+        dto.setCreatedAt(LocalDateTime.now());
         
-        dto.setFechaCreacion(LocalDateTime.now());
-        Cotizacion cotizacionActualizar = DTOMapeadores.toEntity(dto);
+        Quote cotizacionActualizar = DTOMappers.toEntity(dto);
 
         try {
-            return Mapeadores.toDTODetalle(cotizacionesDAO.actualizarCotizacion(cotizacionActualizar));
-        } catch (PersistenciaException e) {
-            throw new NegocioException(MENSAJE_ERROR_ACTUALIZAR_COTIZACION, e);
+            Quote updatedQuote = cotizacionesDAO.updateQuote(cotizacionActualizar);
+            return mapToQuoteDetailDTO(updatedQuote);
+        } catch (PersistenceException e) {
+            throw new BusinessException(MENSAJE_ERROR_ACTUALIZAR_COTIZACION, e);
         }
     }
 
-    public CotizacionDetalleDTO eliminarCotizacion(Long idCotizacion) throws NegocioException {
-
+    public QuoteDetailDTO eliminarCotizacion(Long idCotizacion) throws BusinessException {
         if (idCotizacion == null) {
-            throw new NegocioException(MENSAJE_ID_COTIZACION_AUSENTE_ELIMINAR);
+            throw new BusinessException(MENSAJE_ID_COTIZACION_AUSENTE_ELIMINAR);
         }
 
         try {
-            return Mapeadores.toDTODetalle(cotizacionesDAO.eliminarCotizacion(idCotizacion));
-        } catch (PersistenciaException e) {
-            throw new NegocioException(MENSAJE_ERROR_ELIMINAR_COTIZACION, e);
+            Quote deletedQuote = cotizacionesDAO.deleteQuote(idCotizacion);
+            return mapToQuoteDetailDTO(deletedQuote);
+        } catch (PersistenceException e) {
+            throw new BusinessException(MENSAJE_ERROR_ELIMINAR_COTIZACION, e);
         }
-
     }
 
-    public CotizacionDetalleDTO habilitarCotizacion(Long idCotizacion) throws NegocioException {
-        
+    public QuoteDetailDTO habilitarCotizacion(Long idCotizacion) throws BusinessException {
         if(idCotizacion == null){
-            throw new NegocioException("El id de la cotización no puede ser nulo.");
+            throw new BusinessException("El id de la cotización no puede ser nulo.");
         }
         
         try {
-            return Mapeadores.toDTODetalle(cotizacionesDAO.habilitarCotizacion(idCotizacion));
-        } catch (PersistenciaException e) {
-            throw new NegocioException("Error al habilitar la cotización", e);
+            Quote enabledQuote = cotizacionesDAO.enableQuote(idCotizacion);
+            return mapToQuoteDetailDTO(enabledQuote);
+        } catch (PersistenceException e) {
+            throw new BusinessException("Error al habilitar la cotización", e);
         }
-        
-        
     }
 
-    private void validarCotizacionAgregar(CotizacionAgregarDTO dto) throws NegocioException {
+    // --- HELPER METHODS FOR SAFE MAPPING ---
+    
+    private QuoteDetailDTO mapToQuoteDetailDTO(Quote quote) {
+        if (quote == null) return null;
+        List<QuoteSupplyDetailDTO> supplyDTOs = new ArrayList<>();
+        if(quote.getQuoteSupplies() != null) {
+            supplyDTOs = quote.getQuoteSupplies().stream()
+                .map(qs -> EntityMappers.toQuoteSupplyDetailDTO(qs, null))
+                .collect(Collectors.toList());
+        }
+        return EntityMappers.toQuoteDetailDTO(quote, null, null, null, supplyDTOs);
+    }
+
+    private QuoteSummaryDTO mapToQuoteSummaryDTO(Quote quote) {
+        if (quote == null) return null;
+        List<QuoteSupplyDetailDTO> supplyDTOs = new ArrayList<>();
+        if(quote.getQuoteSupplies() != null) {
+            supplyDTOs = quote.getQuoteSupplies().stream()
+                .map(qs -> EntityMappers.toQuoteSupplyDetailDTO(qs, null))
+                .collect(Collectors.toList());
+        }
+        return EntityMappers.toQuoteSummaryDTO(quote, null, null, supplyDTOs);
+    }
+
+    // --- VALIDATORS ---
+
+    private void validarCotizacionAgregar(QuoteAddDTO dto) throws BusinessException {
         if (dto == null) {
-            throw new NegocioException("Los datos de la cotización no pueden ser nulos.");
+            throw new BusinessException("Los datos de la cotización no pueden ser nulos.");
         }
-        validarPrecioManoObra(dto.getPrecioManoObra());
-        validarEstadoAutomovil(dto.getEstadoAutomovil());
-        validarDiagnosticoGeneral(dto.getDiagnosticoGeneral());
+        validarPrecioManoObra(dto.getLaborPrice());
+        validarEstadoAutomovil(dto.getVehicleStatus());
+        validarDiagnosticoGeneral(dto.getGeneralDiagnosis());
     }
 
-    private void validarCotizacionActualizar(CotizacionActualizarDTO dto) throws NegocioException {
+    private void validarCotizacionActualizar(QuoteUpdateDTO dto) throws BusinessException {
         if (dto == null) {
-            throw new NegocioException("Los datos de la cotización no pueden ser nulos.");
+            throw new BusinessException("Los datos de la cotización no pueden ser nulos.");
         }
-        validarPrecioManoObra(dto.getPrecioManoObra());
-        validarEstadoAutomovil(dto.getEstadoAutomovil());
-        validarDiagnosticoGeneral(dto.getDiagnosticoGeneral());
+        validarPrecioManoObra(dto.getLaborPrice());
+        validarEstadoAutomovil(dto.getVehicleStatus());
+        validarDiagnosticoGeneral(dto.getGeneralDiagnosis());
     }
 
-    private void validarPrecioManoObra(BigDecimal precioManoObra) throws NegocioException {
+    private void validarPrecioManoObra(BigDecimal precioManoObra) throws BusinessException {
         if (precioManoObra == null || precioManoObra.compareTo(BigDecimal.ZERO) < 0) {
-            throw new NegocioException("El precio de mano de obra no es válido, debe ser mayor o igual a 0.");
+            throw new BusinessException("El precio de mano de obra no es válido, debe ser mayor o igual a 0.");
         }
         if (precioManoObra.compareTo(PRECIO_MAXIMO) > 0) {
-            throw new NegocioException("El precio excede el límite permitido del sistema.");
+            throw new BusinessException("El precio excede el límite permitido del sistema.");
         }
     }
 
-    private void validarEstadoAutomovil(String estadoAutomovil) throws NegocioException {
+    private void validarEstadoAutomovil(String estadoAutomovil) throws BusinessException {
         if (estadoAutomovil == null || estadoAutomovil.trim().isEmpty()) {
-            throw new NegocioException("El estado del automóvil no puede estar vacío.");
+            throw new BusinessException("El estado del automóvil no puede estar vacío.");
         }
         if (estadoAutomovil.trim().length() > MAX_LONGITUD_ESTADO) {
             throw new IllegalArgumentException("La descripción del estado no puede superar los "
@@ -265,10 +225,9 @@ public class AdministradorCotizaciones {
         }
     }
 
-    private void validarDiagnosticoGeneral(String diagnosticoGeneral) throws NegocioException {
+    private void validarDiagnosticoGeneral(String diagnosticoGeneral) throws BusinessException {
         if (diagnosticoGeneral == null || diagnosticoGeneral.trim().isEmpty()) {
-            throw new NegocioException("El diagnóstico general es obligatorio para procesar la cotización.");
+            throw new BusinessException("El diagnóstico general es obligatorio para procesar la cotización.");
         }
     }
-
 }

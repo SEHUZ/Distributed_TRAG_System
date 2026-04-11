@@ -16,6 +16,16 @@ public final class CustomerVehicleProto {
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_EmptyRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_EmptyRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_CustomerListResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_CustomerListResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_CustomerRequest_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -44,45 +54,61 @@ public final class CustomerVehicleProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\026customer_vehicle.proto\"&\n\017CustomerRequ" +
-      "est\022\023\n\013customer_id\030\001 \001(\003\"$\n\016VehicleReque" +
-      "st\022\022\n\nvehicle_id\030\001 \001(\003\"v\n\027CustomerSummar" +
-      "yResponse\022\n\n\002id\030\001 \001(\003\022\022\n\nfirst_name\030\002 \001(" +
-      "\t\022\021\n\tlast_name\030\003 \001(\t\022\030\n\020second_last_name" +
-      "\030\004 \001(\t\022\016\n\006exists\030\005 \001(\010\"w\n\026VehicleSummary" +
-      "Response\022\n\n\002id\030\001 \001(\003\022\014\n\004year\030\002 \001(\005\022\025\n\rli" +
-      "cense_plate\030\003 \001(\t\022\r\n\005model\030\004 \001(\t\022\r\n\005bran" +
-      "d\030\005 \001(\t\022\016\n\006exists\030\006 \001(\0102\235\001\n\032CustomerVehi" +
-      "cleServiceGrpc\022@\n\022GetCustomerSummary\022\020.C" +
-      "ustomerRequest\032\030.CustomerSummaryResponse" +
-      "\022=\n\021GetVehicleSummary\022\017.VehicleRequest\032\027" +
-      ".VehicleSummaryResponseB,\n\022com.mycompany" +
-      ".grpcB\024CustomerVehicleProtoP\001b\006proto3"
+      "\n\026customer_vehicle.proto\"\016\n\014EmptyRequest" +
+      "\"C\n\024CustomerListResponse\022+\n\tcustomers\030\001 " +
+      "\003(\0132\030.CustomerSummaryResponse\"&\n\017Custome" +
+      "rRequest\022\023\n\013customer_id\030\001 \001(\003\"$\n\016Vehicle" +
+      "Request\022\022\n\nvehicle_id\030\001 \001(\003\"v\n\027CustomerS" +
+      "ummaryResponse\022\n\n\002id\030\001 \001(\003\022\022\n\nfirst_name" +
+      "\030\002 \001(\t\022\021\n\tlast_name\030\003 \001(\t\022\030\n\020second_last" +
+      "_name\030\004 \001(\t\022\016\n\006exists\030\005 \001(\010\"w\n\026VehicleSu" +
+      "mmaryResponse\022\n\n\002id\030\001 \001(\003\022\014\n\004year\030\002 \001(\005\022" +
+      "\025\n\rlicense_plate\030\003 \001(\t\022\r\n\005model\030\004 \001(\t\022\r\n" +
+      "\005brand\030\005 \001(\t\022\016\n\006exists\030\006 \001(\0102\326\001\n\032Custome" +
+      "rVehicleServiceGrpc\022@\n\022GetCustomerSummar" +
+      "y\022\020.CustomerRequest\032\030.CustomerSummaryRes" +
+      "ponse\022=\n\021GetVehicleSummary\022\017.VehicleRequ" +
+      "est\032\027.VehicleSummaryResponse\0227\n\017GetAllCu" +
+      "stomers\022\r.EmptyRequest\032\025.CustomerListRes" +
+      "ponseB,\n\022com.mycompany.grpcB\024CustomerVeh" +
+      "icleProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         });
-    internal_static_CustomerRequest_descriptor =
+    internal_static_EmptyRequest_descriptor =
       getDescriptor().getMessageTypes().get(0);
+    internal_static_EmptyRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_EmptyRequest_descriptor,
+        new java.lang.String[] { });
+    internal_static_CustomerListResponse_descriptor =
+      getDescriptor().getMessageTypes().get(1);
+    internal_static_CustomerListResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_CustomerListResponse_descriptor,
+        new java.lang.String[] { "Customers", });
+    internal_static_CustomerRequest_descriptor =
+      getDescriptor().getMessageTypes().get(2);
     internal_static_CustomerRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CustomerRequest_descriptor,
         new java.lang.String[] { "CustomerId", });
     internal_static_VehicleRequest_descriptor =
-      getDescriptor().getMessageTypes().get(1);
+      getDescriptor().getMessageTypes().get(3);
     internal_static_VehicleRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_VehicleRequest_descriptor,
         new java.lang.String[] { "VehicleId", });
     internal_static_CustomerSummaryResponse_descriptor =
-      getDescriptor().getMessageTypes().get(2);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_CustomerSummaryResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_CustomerSummaryResponse_descriptor,
         new java.lang.String[] { "Id", "FirstName", "LastName", "SecondLastName", "Exists", });
     internal_static_VehicleSummaryResponse_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_VehicleSummaryResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_VehicleSummaryResponse_descriptor,

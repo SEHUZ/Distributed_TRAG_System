@@ -1,8 +1,7 @@
 
 package presentacion.vistas;
 
-import dtos.automovil.AutomovilResumenDTO;
-import dtos.servicio.ServicioResumenDTO;
+import dtos.service.ServiceSummaryDTO;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -41,8 +40,8 @@ public class VistaServicios extends JFrame implements IVistaServicios{
     private IControlAgregarCotizacion control;
     
     private JPanel panelActivo;
-    private ServicioResumenDTO servicioSeleccionado;
-    
+private ServiceSummaryDTO servicioSeleccionado;
+
     private final Border BORDE_PANEL_SERVICIO = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 2, true);
     private final Border BORDE_PANEL_SERVICIO_SELECCIONADO = BorderFactory.createLineBorder(new Color(0, 120, 150), 2);
     
@@ -72,7 +71,6 @@ public class VistaServicios extends JFrame implements IVistaServicios{
 
         jButton1 = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
-        panelEncabezado1 = new presentacion.vistas.PanelEncabezado();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -90,7 +88,6 @@ public class VistaServicios extends JFrame implements IVistaServicios{
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1100, 700));
-        getContentPane().add(panelEncabezado1, java.awt.BorderLayout.PAGE_START);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 204));
         jPanel1.setLayout(new java.awt.GridBagLayout());
@@ -228,13 +225,12 @@ public class VistaServicios extends JFrame implements IVistaServicios{
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
-    private presentacion.vistas.PanelEncabezado panelEncabezado1;
     private javax.swing.JPanel panelServicios;
     private javax.swing.JScrollPane scrollServicios;
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void cargarServicios(List<ServicioResumenDTO> servicios) {
+    public void cargarServicios(List<ServiceSummaryDTO> servicios) {
         
         JPanel panelContenedor = new JPanel();
         panelContenedor.setLayout(new GridBagLayout());
@@ -270,7 +266,7 @@ public class VistaServicios extends JFrame implements IVistaServicios{
 
             int anchoServicio = (anchoDisponible - ((columnasMaximas + 1) * margenServicio)) / columnasMaximas - 20;
             
-            for(ServicioResumenDTO servicio : servicios) {
+            for(ServiceSummaryDTO servicio : servicios) {
 
                 JPanel panelServicio = new JPanel(new BorderLayout(0, 10));
                 panelServicio.setBackground(Color.WHITE);
@@ -284,13 +280,15 @@ public class VistaServicios extends JFrame implements IVistaServicios{
                 configurarListenerPanelServicio(panelServicio, servicio);
 
                 String nombreServicio = "<html><div style='text-align: center; width: " + (anchoServicio - 50) + "px; font-size: 9px;'>" 
-                               + servicio.getNombre() 
+                               + servicio.getName() 
                                + "</div></html>";
                 JLabel labelNombre = new JLabel(nombreServicio, SwingConstants.CENTER);
                 panelServicio.add(labelNombre, BorderLayout.SOUTH);
 
                 int tamañoIcono = (int)(anchoServicio * 0.6);
-                ImageIcon iconoRedimensionado = redimensionarIcono(servicio.getDireccionIcono(), tamañoIcono, tamañoIcono);
+                
+                String rutaIcono = servicio.getIconPath() != null ? servicio.getIconPath() : "";
+                ImageIcon iconoRedimensionado = redimensionarIcono(rutaIcono, tamañoIcono, tamañoIcono);
 
                 if (iconoRedimensionado != null) {
                     JLabel labelIcono = new JLabel(iconoRedimensionado);
@@ -314,13 +312,12 @@ public class VistaServicios extends JFrame implements IVistaServicios{
         scrollServicios.setOpaque(false);
         scrollServicios.setViewportView(panelContenedor);
         
-        // 3. Limpiar variables de selección por seguridad al recargar
         btnContinuar.setEnabled(false);
         panelActivo = null;
         servicioSeleccionado = null;
     }
     
-    private void configurarListenerPanelServicio(JPanel panelServicio, ServicioResumenDTO servicio){
+    private void configurarListenerPanelServicio(JPanel panelServicio, ServiceSummaryDTO servicio){
         panelServicio.addMouseListener(new MouseAdapter() {
     
             @Override

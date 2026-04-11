@@ -12,6 +12,7 @@ import presentacion.interfaces.IVistaPrincipal;
  * 
  * @author Ariel Eduardo Borbón Izaguirre - 253080
  * @author Sebastián Bórquez Huerta - 253080
+ * @author Chris Fitch Lopez - 252379
  * @author Yuri Germán García López - 253080
  * @author Manuel Romo López - 253080
  * 
@@ -38,7 +39,6 @@ public class VistaPrincipal extends JFrame implements IVistaPrincipal{
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        panelEncabezado1 = new presentacion.vistas.PanelEncabezado();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
@@ -47,7 +47,6 @@ public class VistaPrincipal extends JFrame implements IVistaPrincipal{
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1110, 700));
-        getContentPane().add(panelEncabezado1, java.awt.BorderLayout.PAGE_START);
 
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
@@ -136,7 +135,6 @@ public class VistaPrincipal extends JFrame implements IVistaPrincipal{
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
-    private presentacion.vistas.PanelEncabezado panelEncabezado1;
     // End of variables declaration//GEN-END:variables
 
     @Override

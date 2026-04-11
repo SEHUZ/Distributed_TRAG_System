@@ -1,0 +1,5 @@
+Interfaces\IAdministradorInsumos.class
+Interfaces\IAdministradorServicios.class
+Facades\FAdministradorInsumos.class
+Facades\FAdministradorServicios.class
+Service\InventoryAndServiceManager.class

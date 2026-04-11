@@ -1,10 +1,9 @@
-
 package presentacion.utils;
 
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
-import dtos.insumocotizacion.InsumoCotizacionDetalleDTO;
+import dtos.quoteSupply.QuoteSupplyDetailDTO;
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -18,6 +17,7 @@ import java.util.Locale;
  * 
  * @author Ariel Eduardo Borbón Izaguirre - 253080
  * @author Sebastián Bórquez Huerta - 253080
+ * @author Chris Fitch Lopez - 252379
  * @author Yuri Germán García López - 253080
  * @author Manuel Romo López - 253080
  * 
@@ -30,7 +30,7 @@ public class GeneradorPDF {
             String nombreCompletoCliente,
             BigDecimal costoManoObra,
             String automovil,
-            List<InsumoCotizacionDetalleDTO> insumosCotizacion) {
+           List<QuoteSupplyDetailDTO> insumosCotizacion) {
         
         Document documento = new Document(PageSize.LETTER, 40, 40, 40, 40);
 
@@ -150,18 +150,8 @@ public class GeneradorPDF {
             tablaInsumos.addCell(hPre);
 
             // Filas
-            for(InsumoCotizacionDetalleDTO insumoCotizacion: insumosCotizacion){
-                agregarFilaInsumo(
-                        tablaInsumos,
-                        insumoCotizacion.getInsumo().getNombre(),
-                        insumoCotizacion.getCantidadRequerida().toString(), 
-                        insumoCotizacion.getPrecio().toString(), 
-                        insumoCotizacion.getSubtotal().toString(),
-                        fuenteNegrita);
-            }
-            
             BigDecimal subtotal = insumosCotizacion.stream()
-                .map(InsumoCotizacionDetalleDTO::getSubtotal)
+                .map(QuoteSupplyDetailDTO::getSubtotal)
                 .filter(s -> s != null)
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
                 .add(costoManoObra);
@@ -169,6 +159,7 @@ public class GeneradorPDF {
             BigDecimal iva = subtotal.multiply(new BigDecimal("0.16"));
             
             BigDecimal total = subtotal.add(iva);
+            
 
             // Totales
             BaseColor grisClaro = new BaseColor(230, 230, 230);

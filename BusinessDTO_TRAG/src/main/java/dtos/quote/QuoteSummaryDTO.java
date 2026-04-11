@@ -26,6 +26,7 @@ public class QuoteSummaryDTO {
     private String vehicleModel;
     private String vehicleLicensePlate;
     private Integer vehicleYear;
+    private LocalDateTime creationDate;
 
     private LocalDateTime createdAt;
     private BigDecimal laborPrice;
@@ -102,5 +103,13 @@ public class QuoteSummaryDTO {
 
     public void setTotalPrice(BigDecimal totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
     }
 }

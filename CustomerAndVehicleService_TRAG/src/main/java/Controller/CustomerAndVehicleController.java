@@ -27,7 +27,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
- * @author sonic
+ * @author Ariel Eduardo Borbón Izaguirre - 253080
+ * @author Sebastián Bórquez Huerta - 253080
+ * @author Chris Fitch Lopez - 252379
  */
 @RestController
 @RequestMapping("/api")
@@ -80,7 +82,6 @@ public class CustomerAndVehicleController{
         }
     }
 
-    // VEHICLE ENDPOINTS
     @PostMapping("/vehicles")
     public ResponseEntity<?> addVehicle(@RequestBody VehicleAddDTO dto) {
         try {

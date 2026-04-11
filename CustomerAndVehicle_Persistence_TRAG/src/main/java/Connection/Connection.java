@@ -16,6 +16,7 @@ public class Connection {
     
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("com.mycompany_CustomerAndVehicle_Persistence_TRAG_jar_1.0PU");
     
+    
     /**
      * Crea una nueva conexión con la base de datos.
      * @return Objeto EntityManager.
@@ -23,6 +24,8 @@ public class Connection {
     public static EntityManager crearConexion() {
         return emf.createEntityManager(); // Se reutiliza el factory y se obtiene un nuevo EntityManager
     }
+    
+    
     
     /**
      * Cierra la conexión con la base de datos.
