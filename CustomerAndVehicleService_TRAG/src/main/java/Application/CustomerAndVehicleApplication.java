@@ -19,7 +19,7 @@ import org.springframework.context.annotation.ComponentScan;
  * @author Chris Fitch Lopez - 252379
  */
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
-@ComponentScan(basePackages = {"Controller", "Service"})
+@ComponentScan(basePackages = {"Controller", "Service", "grpc"})
 public class CustomerAndVehicleApplication {
 
     public static void main(String[] args) {
