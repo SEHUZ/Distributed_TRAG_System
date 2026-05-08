@@ -1,12 +1,10 @@
 Interfaces\ICustomerDAO.class
-Daos\VehicleDAO.class
-Entitys\Customer_.class
-Interfaces\IVehicleDAO.class
-tests\testCustomerVehicle.class
-Entitys\Customer.class
-Entitys\Vehicle_.class
 Connection\Connection.class
+Daos\VehicleDAO.class
 Daos\CustomerDAO.class
 Entitys\Vehicle.class
 Enums\CustomerStatus.class
 Exception\PersistenceException.class
+Interfaces\IVehicleDAO.class
+tests\testCustomerVehicle.class
+Entitys\Customer.class
