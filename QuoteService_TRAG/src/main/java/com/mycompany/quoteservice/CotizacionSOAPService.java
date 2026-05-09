@@ -23,13 +23,11 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 @Endpoint
 public class CotizacionSOAPService {
 
-    // Asegúrate de que este namespace coincida exactamente con el targetNamespace de tu cotizacion_schema.xsd
     private static final String NAMESPACE_URI = "http://mycompany.com/quoteservice";
     private ManagedChannel customerChannel;
     private CustomerVehicleServiceGrpcGrpc.CustomerVehicleServiceGrpcBlockingStub customerStub;
 
     public CotizacionSOAPService() {
-        // Conexión gRPC hacia el CustomerAndVehicleService
         this.customerChannel = ManagedChannelBuilder.forAddress("localhost", 8081)
                 .usePlaintext()
                 .build();
@@ -37,7 +35,6 @@ public class CotizacionSOAPService {
         this.customerStub = CustomerVehicleServiceGrpcGrpc.newBlockingStub(customerChannel);
     }
 
-    // Actualizamos "localPart" al nombre real de la petición generada por tu XSD
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "CalculateQuoteRequest")
     @ResponsePayload
     public CalculateQuoteResponse procesarCotizacion(@RequestPayload CalculateQuoteRequest request) {
@@ -45,22 +42,15 @@ public class CotizacionSOAPService {
         CalculateQuoteResponse response = new CalculateQuoteResponse();
         
         try {
-            // Empaquetamos la petición gRPC usando el ID que viene en el XML SOAP.
-            // OJO: Asumo que request.getClienteId() devuelve un int o long.
             CustomerRequest grpcRequest = CustomerRequest.newBuilder()
-                    .setCustomerId(request.getClienteId()) // Cambiado a setCustomerId para coincidir con tu proto
+                    .setCustomerId(request.getClienteId())
                     .build();
 
-            // Llamada gRPC a alta velocidad
             CustomerSummaryResponse grpcResponse = customerStub.getCustomerSummary(grpcRequest);
 
-            // Validamos si el cliente existe (basado en el campo 'exists' de tu proto)
             if (grpcResponse.getExists()) {
-                // NOTA: Reemplaza setTotalEstimado y setMensaje con las propiedades reales 
-                // que tenga tu objeto CalculateQuoteResponse.
                 System.out.println("Cliente validado exitosamente: " + grpcResponse.getFirstName());
                 response.setTotalEstimado(request.getTotalEstimado());
-                // Aquí en el futuro sumarás la validación del inventario
             } else {
                 System.out.println("Error: El cliente no es elegible para cotizaciones o no existe.");
                 response.setTotalEstimado(0.0);
