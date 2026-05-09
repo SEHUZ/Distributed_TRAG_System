@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://mycompany.com/quoteservice"
+           xmlns:tns="http://mycompany.com/quoteservice"
+           elementFormDefault="qualified">
+    
+    <xs:element name="CalculateQuoteRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="clienteId"        type="xs:long"/>
+                <xs:element name="vehiculoId"       type="xs:long"/>
+                <xs:element name="serviceId"        type="xs:long"/>
+                <xs:element name="vehicleStatus"    type="xs:string" minOccurs="0"/>
+                <xs:element name="generalDiagnosis" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="CalculateQuoteResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="quoteId"       type="xs:long"/>
+                <xs:element name="mensaje"       type="xs:string"/>
+                <xs:element name="totalEstimado" type="xs:double"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+import "customer_vehicle.proto";
+
+option java_multiple_files = true;
+option java_package = "com.mycompany.grpc.inventory";
+option java_outer_classname = "InventoryServiceProto";
+
+service InventoryAndServiceGrpc {
+  rpc GetServiceSummary (ServiceRequest) returns (ServiceSummaryResponse);
+  rpc GetServiceDetail (ServiceRequest) returns (ServiceDetailResponse);
+  rpc GetAllServices (EmptyRequest) returns (ServiceListResponse);
+  rpc GetSupplySummary (SupplyRequest) returns (SupplySummaryResponse);
+}
+
+message ServiceRequest {
+  int64 service_id = 1;
+}
+
+message SupplyRequest {
+  int64 supply_id = 1;
+}
+
+message SupplyItemResponse {
+  int64 supply_id      = 1;
+  string name          = 2;
+  double suggested_cost = 3;
+  int32 default_quantity = 4;
+}
+
+message ServiceSummaryResponse {
+  int64 id                    = 1;
+  string name                 = 2;
+  double suggested_labor_cost = 3;
+  bool exists                 = 4;
+}
+
+message ServiceDetailResponse {
+  int64 id                    = 1;
+  string name                 = 2;
+  string description          = 3;
+  double suggested_labor_cost = 4;
+  string icon_route           = 5;
+  repeated SupplyItemResponse supplies = 6;
+  bool exists                 = 7;
+}
+
+message ServiceListResponse {
+  repeated ServiceSummaryResponse services = 1;
+}
+
+message SupplySummaryResponse {
+  int64 id             = 1;
+  string name          = 2;
+  double suggested_cost = 3;
+  bool exists          = 4;
+}
