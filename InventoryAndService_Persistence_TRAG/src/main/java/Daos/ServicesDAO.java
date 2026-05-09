@@ -25,8 +25,6 @@ public class ServicesDAO implements IServicesDAO {
     private final String ERROR_ADD = "Error adding the service.";
     private final String ERROR_FIND = "Error finding the service.";
     private final String ERROR_FIND_ALL = "Error finding all services.";
-    private final String ERROR_UPDATE = "Error updating the service.";
-    private final String ERROR_DELETE = "Error deleting the service.";
     
     @Override
     public Service addService(Service service) throws PersistenceException {
@@ -68,13 +66,13 @@ public class ServicesDAO implements IServicesDAO {
             
             String jpql = "SELECT DISTINCT s FROM Service s " +
                           "LEFT JOIN FETCH s.serviceSupplies i " +
-                          "WHERE s.id = :id AND s.active = :active " +
-                          "AND (i.id IS NULL OR i.active = :activeSupply)";
+                          "WHERE s.id = :id AND s.enabled = :enabled " +
+                          "AND (i.id IS NULL OR i.enabled = :enabledSupply)";
 
             return em.createQuery(jpql, Service.class)
                      .setParameter("id", idService)
-                     .setParameter("active", true)
-                     .setParameter("activeSupply", true)
+                     .setParameter("enabled", true)
+                     .setParameter("enabledSupply", true)
                      .getSingleResult();
 
         } catch (NoResultException e) {
@@ -92,12 +90,12 @@ public class ServicesDAO implements IServicesDAO {
         try {
             String jpql = "SELECT DISTINCT s FROM Service s " +
                           "LEFT JOIN FETCH s.serviceSupplies i " +
-                          "WHERE s.active = :active " +
-                          "AND (i.id IS NULL OR i.active = :activeSupply)";
+                          "WHERE s.enabled = :enabled " +
+                          "AND (i.id IS NULL OR i.enabled = :enabledSupply)";
 
             return em.createQuery(jpql, Service.class)
-                     .setParameter("active", true)
-                     .setParameter("activeSupply", true)
+                     .setParameter("enabled", true)
+                     .setParameter("enabledSupply", true)
                      .getResultList();
 
         } catch (Exception e) {
@@ -115,13 +113,13 @@ public class ServicesDAO implements IServicesDAO {
 
             String jpql = "SELECT DISTINCT s FROM Service s " +
                           "LEFT JOIN FETCH s.serviceSupplies i " +
-                          "WHERE s.active = :active " +
-                          "AND (i.id IS NULL OR i.active = :activeSupply) " +
+                          "WHERE s.enabled = :enabled " +
+                          "AND (i.id IS NULL OR i.enabled = :enabledSupply) " +
                           "AND LOWER(s.name) LIKE :name";
 
             return em.createQuery(jpql, Service.class)
-                     .setParameter("active", true)
-                     .setParameter("activeSupply", true)
+                     .setParameter("enabled", true)
+                     .setParameter("enabledSupply", true)
                      .setParameter("name", searchTerm)
                      .setHint(QueryHints.REFRESH, HintValues.TRUE) 
                      .getResultList();

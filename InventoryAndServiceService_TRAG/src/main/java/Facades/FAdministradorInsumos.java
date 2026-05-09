@@ -18,7 +18,7 @@ public class FAdministradorInsumos implements IAdministradorInsumos {
     private final InventoryAndServiceManager manager = new InventoryAndServiceManager();
 
     @Override
-    public List<SupplySummaryDTO> obtenerInsumosNombre(String nombre) throws BusinessException {
-        return manager.getSuppliesByName(nombre);
+    public List<SupplySummaryDTO> getSuppliesByName(String name) throws BusinessException {
+        return manager.getSuppliesByName(name);
     }
 }

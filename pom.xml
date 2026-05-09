@@ -21,7 +21,6 @@
         <module>Presentacion_TRAG</module>
         <module>QuoteService_TRAG</module>
         <module>Quotes_Persistence_TRAG</module>
-        <module>CustomerAndVehicleClient_TRAG</module>
         <module>ApiGateway_TRAG</module>
     </modules>
 

@@ -14,7 +14,7 @@ import java.util.List;
  * @author chris
  */
 public interface IAdministradorServicios {
-    List<ServiceSummaryDTO> obtenerTodosServicios() throws BusinessException;
-    ServiceDetailDTO obtenerServicio(Long id) throws BusinessException;
-    List<ServiceSummaryDTO> obtenerServiciosNombre(String nombre) throws BusinessException;
+    List<ServiceSummaryDTO> getAllServices() throws BusinessException;
+    ServiceDetailDTO getService(Long id) throws BusinessException;
+    List<ServiceSummaryDTO> getServicesByName(String name) throws BusinessException;
 }

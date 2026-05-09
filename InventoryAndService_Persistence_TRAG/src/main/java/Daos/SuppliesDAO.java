@@ -59,10 +59,10 @@ public class SuppliesDAO implements ISuppliesDAO{
         try {
             String terminoBusqueda = "%" + supplyName.trim().toLowerCase() + "%";
 
-            String jpql = "SELECT i FROM Insumo i WHERE LOWER(i.nombre) LIKE :nombre";
+            String jpql = "SELECT s FROM Supply s WHERE LOWER(s.name) LIKE :name";
 
             return em.createQuery(jpql, Supply.class)
-                     .setParameter("nombre", terminoBusqueda)
+                     .setParameter("name", terminoBusqueda)
                      .getResultList();
 
         } catch (Exception e) {

@@ -11,3 +11,9 @@ spring:
           uri: http://localhost:8081 
           predicates:
             - Path=/api/customers/**, /api/vehicles/**
+            
+        # Ruta para el servicio de inventario y servicios  
+        - id: inventory_service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/catalog/**

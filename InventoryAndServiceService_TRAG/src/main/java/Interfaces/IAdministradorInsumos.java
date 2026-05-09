@@ -13,5 +13,5 @@ import java.util.List;
  * @author chris
  */
 public interface IAdministradorInsumos {
-    List<SupplySummaryDTO> obtenerInsumosNombre(String nombre) throws BusinessException;
+    List<SupplySummaryDTO> getSuppliesByName(String name) throws BusinessException;
 }

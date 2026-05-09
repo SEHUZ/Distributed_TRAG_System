@@ -14,7 +14,7 @@ import javax.persistence.Persistence;
  */
 public class Connection {
     
-    private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("Connection_Inventory&Service_TRAG");
+    private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("com.mycompany_InventoryAndService_Persistence_TRAG_jar_1.0PU");
     
     /**
      * Crea una nueva conexión con la base de datos.

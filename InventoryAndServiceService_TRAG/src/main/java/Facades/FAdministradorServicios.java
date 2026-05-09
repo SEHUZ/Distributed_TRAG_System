@@ -19,17 +19,17 @@ public class FAdministradorServicios implements IAdministradorServicios {
     private final InventoryAndServiceManager manager = new InventoryAndServiceManager();
 
     @Override
-    public List<ServiceSummaryDTO> obtenerTodosServicios() throws BusinessException {
+    public List<ServiceSummaryDTO> getAllServices() throws BusinessException {
         return manager.getAllServices();
     }
 
     @Override
-    public ServiceDetailDTO obtenerServicio(Long id) throws BusinessException {
+    public ServiceDetailDTO getService(Long id) throws BusinessException {
         return manager.getService(id);
     }
 
     @Override
-    public List<ServiceSummaryDTO> obtenerServiciosNombre(String nombre) throws BusinessException {
-        return manager.getServicesByName(nombre);
+    public List<ServiceSummaryDTO> getServicesByName(String name) throws BusinessException {
+        return manager.getServicesByName(name);
     }
 }
