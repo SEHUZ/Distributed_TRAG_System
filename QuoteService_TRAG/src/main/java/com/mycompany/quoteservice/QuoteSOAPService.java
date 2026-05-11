@@ -1,9 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.quoteservice;
-
 
 import Entitys.Quote;
 import Exception.BusinessException;
@@ -18,7 +13,7 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 /**
  *
  * @author sonic
- * 
+ *
  */
 @Endpoint
 public class QuoteSOAPService {
@@ -35,22 +30,35 @@ public class QuoteSOAPService {
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "CalculateQuoteRequest")
     @ResponsePayload
     public CalculateQuoteResponse procesarCotizacion(
-            @RequestPayload CalculateQuoteRequest request) throws BusinessException, PersistenceException {
+            @RequestPayload CalculateQuoteRequest request) {
 
         CalculateQuoteResponse response = new CalculateQuoteResponse();
-        response.setQuoteId(0L);
-        response.setTotalEstimado(0.0);
 
-        Quote saved = quoteManager.crearCotizacion(
-                request.getClienteId(),
-                request.getVehiculoId(),
-                request.getServiceId(),
-                request.getVehicleStatus(),
-                request.getGeneralDiagnosis()
-        );
-        response.setQuoteId(saved.getId());
-        response.setTotalEstimado(saved.getLaborPrice().doubleValue());
-        response.setMensaje("Cotización #" + saved.getId() + " creada exitosamente.");
+        try {
+            Quote saved = quoteManager.crearCotizacion(
+                    request.getClienteId(),
+                    request.getVehiculoId(),
+                    request.getServiceId(),
+                    request.getVehicleStatus(),
+                    request.getGeneralDiagnosis()
+            );
+
+            response.setQuoteId(saved.getId());
+            response.setTotalEstimado(saved.getLaborPrice().doubleValue());
+            response.setMensaje("Cotización #" + saved.getId() + " creada exitosamente.");
+
+        } catch (BusinessException | PersistenceException e) {
+
+            response.setQuoteId(0L);
+            response.setTotalEstimado(0.0);
+            response.setMensaje("No se pudo crear la cotización: " + e.getMessage());
+
+        } catch (Exception e) {
+
+            response.setQuoteId(0L);
+            response.setTotalEstimado(0.0);
+            response.setMensaje("Error inesperado al crear la cotización: " + e.getMessage());
+        }
 
         return response;
     }
