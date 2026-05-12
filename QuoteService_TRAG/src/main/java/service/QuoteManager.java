@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PreDestroy;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -40,23 +41,23 @@ public class QuoteManager {
 
     private final QuoteDAO quoteDAO;
 
-    public QuoteManager() {
+    public QuoteManager(
+            @Value("${grpc.client.customer.host}") String customerHost,
+            @Value("${grpc.client.customer.port}") int customerPort,
+            @Value("${grpc.client.inventory.host}") String inventoryHost,
+            @Value("${grpc.client.inventory.port}") int inventoryPort) {
 
         this.customerChannel = ManagedChannelBuilder
-                .forAddress("localhost", 9081)
+                .forAddress(customerHost, customerPort)
                 .usePlaintext()
                 .build();
-
-        this.customerStub =
-                CustomerVehicleServiceGrpcGrpc.newBlockingStub(customerChannel);
+        this.customerStub = CustomerVehicleServiceGrpcGrpc.newBlockingStub(customerChannel);
 
         this.inventoryChannel = ManagedChannelBuilder
-                .forAddress("localhost", 9082)
+                .forAddress(inventoryHost, inventoryPort)
                 .usePlaintext()
                 .build();
-
-        this.inventoryStub =
-                InventoryAndServiceGrpcGrpc.newBlockingStub(inventoryChannel);
+        this.inventoryStub = InventoryAndServiceGrpcGrpc.newBlockingStub(inventoryChannel);
 
         this.quoteDAO = new QuoteDAO();
     }
@@ -69,28 +70,28 @@ public class QuoteManager {
             String generalDiagnosis)
             throws BusinessException, PersistenceException {
 
-        CustomerSummaryResponse customerResp =
-                validarCliente(clienteId);
+        CustomerSummaryResponse customerResp
+                = validarCliente(clienteId);
 
-        VehicleSummaryResponse vehicleResp =
-                validarVehiculo(vehiculoId);
+        VehicleSummaryResponse vehicleResp
+                = validarVehiculo(vehiculoId);
 
-        ServiceDetailResponse serviceResp =
-                obtenerServicio(serviceId);
+        ServiceDetailResponse serviceResp
+                = obtenerServicio(serviceId);
 
-        double laborCost =
-                serviceResp.getSuggestedLaborCost();
+        double laborCost
+                = serviceResp.getSuggestedLaborCost();
 
-        double supplyCost =
-                serviceResp.getSuppliesList()
+        double supplyCost
+                = serviceResp.getSuppliesList()
                         .stream()
-                        .mapToDouble(s ->
-                                s.getSuggestedCost()
-                                * s.getDefaultQuantity())
+                        .mapToDouble(s
+                                -> s.getSuggestedCost()
+                        * s.getDefaultQuantity())
                         .sum();
 
-        double total =
-                laborCost + supplyCost;
+        double total
+                = laborCost + supplyCost;
 
         Quote quote = construirQuote(
                 clienteId,
@@ -128,8 +129,8 @@ public class QuoteManager {
 
         try {
 
-            CustomerSummaryResponse resp =
-                    customerStub.getCustomerSummary(
+            CustomerSummaryResponse resp
+                    = customerStub.getCustomerSummary(
                             CustomerRequest.newBuilder()
                                     .setCustomerId(clienteId)
                                     .build());
@@ -160,8 +161,8 @@ public class QuoteManager {
 
         try {
 
-            VehicleSummaryResponse resp =
-                    customerStub.getVehicleSummary(
+            VehicleSummaryResponse resp
+                    = customerStub.getVehicleSummary(
                             VehicleRequest.newBuilder()
                                     .setVehicleId(vehiculoId)
                                     .build());
@@ -192,8 +193,8 @@ public class QuoteManager {
 
         try {
 
-            ServiceDetailResponse resp =
-                    inventoryStub.getServiceDetail(
+            ServiceDetailResponse resp
+                    = inventoryStub.getServiceDetail(
                             ServiceRequest.newBuilder()
                                     .setServiceId(serviceId)
                                     .build());
@@ -234,7 +235,6 @@ public class QuoteManager {
         quote.setCustomerId(clienteId);
         quote.setVehicleId(vehiculoId);
 
-        // Ahora sí guarda el TOTAL real
         quote.setLaborPrice(BigDecimal.valueOf(total));
 
         quote.setStatus(QuoteStatus.ENABLED);
@@ -253,8 +253,8 @@ public class QuoteManager {
             quote.setGeneralDiagnosis(generalDiagnosis);
         }
 
-        List<QuoteSupply> quoteSupplies =
-                new ArrayList<>();
+        List<QuoteSupply> quoteSupplies
+                = new ArrayList<>();
 
         for (SupplyItemResponse s : supplies) {
 
