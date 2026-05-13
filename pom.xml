@@ -22,6 +22,7 @@
         <module>QuoteService_TRAG</module>
         <module>Quotes_Persistence_TRAG</module>
         <module>ApiGateway_TRAG</module>
+        <module>AuthService_TRAG</module>
     </modules>
 
     <properties>
