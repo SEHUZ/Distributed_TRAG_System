@@ -3,57 +3,47 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Service;
-
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.stereotype.Service;
-import javax.crypto.SecretKey;
-import java.util.Date;
-import java.nio.charset.StandardCharsets;
-import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import java.security.Key;
+import java.util.Date;
 
-/**
- * Clase que firma los JWT y verificar si son legitimos
- *
- * @author chris
- */
 @Service
 public class AuthManager {
 
     @Value("${jwt.secret}")
-    private String secretKeyStr;
+    private String secretKey;
 
-    private SecretKey key;
+    @Value("${jwt.expiration}")
+    private long expirationTime;
 
-    private final long EXPIRATION_TIME = 86_400_000; // la llave dura 24 horas
-
-        // Metodo se ejecuta despues de que Spring inyecta el Value
-    @PostConstruct
-    public void init() {
-        this.key = Keys.hmacShaKeyFor(secretKeyStr.getBytes(StandardCharsets.UTF_8));
+    private Key getSigningKey() {
+        byte[] keyBytes = secretKey.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String generateToken(String username, String role) {
         return Jwts.builder()
-                .subject(username)
+                .setSubject(username)
                 .claim("role", role)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(key)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public Claims validateToken(String token) {
+    public boolean validateToken(String token) {
         try {
-            return Jwts.parser()
-                    .verifyWith(key)
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
+            Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token);
+            return true;
         } catch (Exception e) {
-            return null;
+            return false;
         }
     }
 }

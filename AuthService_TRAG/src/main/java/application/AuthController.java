@@ -2,13 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package application;
+package Application;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import java.util.Date;
+import Service.AuthManager;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,33 +23,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private static final String SECRET_KEY = 
-    "3c9f1a8e7d4b2f6a9e1c5d7b8f2a4c6e" +
-    "9b7d5f3a1c8e6d4f2b9a7c5e3d1f8a6b";
-    
-    private static final long EXPIRATION_TIME = 3600000;
+    @Autowired
+    private AuthManager authManager;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        
-        if ("admin".equals(loginRequest.getUsername()) && "admin123".equals(loginRequest.getPassword())) {
+        if ("admin".equals(loginRequest.getUsername()) && "1234".equals(loginRequest.getPassword())) {
             
-            String token = Jwts.builder()
-                    .setSubject(loginRequest.getUsername()) 
-                    .setIssuedAt(new Date())
-                    .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                    .signWith(SignatureAlgorithm.HS256, SECRET_KEY.getBytes()) 
-                    .compact();
+            String token = authManager.generateToken(loginRequest.getUsername(), "ROLE_ADMIN");
 
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
             response.put("type", "Bearer");
             
             return ResponseEntity.ok(response);
-            
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario o contraseña incorrectos");
         }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
     }
 }
 
@@ -73,7 +61,8 @@ class LoginRequest {
     public void setPassword(String password) {
         this.password = password;
     }
-    
 
+    
+    
     
 }

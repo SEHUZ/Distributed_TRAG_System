@@ -1,2 +1,18 @@
 server:
+  # Puerto HTTP para el REST Controller (para el login con swing)
   port: 8084
+
+grpc:
+  server:
+    # Puerto gRPC para la comunicación interna entre microservicios
+    port: 9084
+
+spring:
+  application:
+    name: auth-service
+
+jwt:
+  # key chila
+  secret: "hola_soy_una_llave_secreta_increiblemente_larga_y_segura_para_que_no_nos_hacken_gracias_ITSON"
+  # (1 hora)
+  expiration: 3600000

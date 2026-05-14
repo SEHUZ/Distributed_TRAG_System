@@ -6,19 +6,19 @@ package Application.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import org.springframework.http.HttpHeaders;
+import io.jsonwebtoken.security.Keys; 
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets; 
 
 @Component
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
 
-        private static final String SECRET_KEY = 
-    "3c9f1a8e7d4b2f6a9e1c5d7b8f2a4c6e" +
-    "9b7d5f3a1c8e6d4f2b9a7c5e3d1f8a6b";
+    private static final String SECRET_KEY = "hola_soy_una_llave_secreta_increiblemente_larga_y_segura_para_que_no_nos_hacken_gracias_ITSON";
 
     public AuthenticationFilter() {
         super(Config.class);
@@ -27,7 +27,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
-            
+
             if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                 exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
                 return exchange.getResponse().setComplete();
@@ -43,11 +43,11 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
             try {
                 Claims claims = Jwts.parserBuilder()
-                        .setSigningKey(SECRET_KEY.getBytes())
+                        .setSigningKey(Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8)))
                         .build()
                         .parseClaimsJws(authHeader)
                         .getBody();
-                
+
                 exchange.getRequest().mutate()
                         .header("X-User-Id", claims.getSubject())
                         .build();
