@@ -1,1 +1,3 @@
+Application\security\AuthenticationFilter$Config.class
 Application\ApiGateWayApplication.class
+Application\security\AuthenticationFilter.class

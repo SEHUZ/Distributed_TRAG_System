@@ -53,7 +53,7 @@ public class CustomerAndVehicleController{
     }
 
     @GetMapping("/customers/{id}")
-    public ResponseEntity<?> getCustomer(@PathVariable Long id) {
+    public ResponseEntity<?> getCustomer(@PathVariable("id") Long id) {
         try {
             CustomerDetailDTO result = manager.getCustomer(id);
             return new ResponseEntity<>(result, HttpStatus.OK);
@@ -93,7 +93,7 @@ public class CustomerAndVehicleController{
     }
 
     @GetMapping("/vehicles/{id}")
-    public ResponseEntity<?> getVehicle(@PathVariable Long id) {
+    public ResponseEntity<?> getVehicle(@PathVariable("id") Long id) {
         try {
             VehicleDetailDTO result = manager.getVehicle(id);
             return new ResponseEntity<>(result, HttpStatus.OK); // 200

@@ -44,6 +44,10 @@ public class ServiceSupply implements Serializable {
     public ServiceSupply() {
     }
 
+
+    
+    
+
     public ServiceSupply(Long id) {
         this.id = id;
     }

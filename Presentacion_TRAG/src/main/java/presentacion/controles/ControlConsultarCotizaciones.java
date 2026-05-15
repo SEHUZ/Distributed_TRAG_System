@@ -1,8 +1,5 @@
 package presentacion.controles;
 
-import Exception.BusinessException;
-import Interfaces.IAdministradorInsumos;
-import com.mycompany.administradorcotizaciones_trag.IAdministradorCotizaciones;
 import dtos.quote.QuoteSummaryDTO;
 import dtos.quote.QuoteDetailDTO;
 import dtos.quote.QuoteUpdateDTO;
@@ -20,6 +17,8 @@ import presentacion.interfaces.vistas.IVistaConsultaCotizacion;
 import presentacion.interfaces.vistas.IVistaHistorialCotizaciones;
 import presentacion.interfaces.IControlConsultarCotizaciones;
 import presentacion.interfaces.IControlCotizaciones;
+import presentacion.interfaces.backend.IAdministradorCotizaciones;
+import presentacion.interfaces.backend.IAdministradorInsumos;
 
 /**
  *
@@ -114,7 +113,7 @@ public class ControlConsultarCotizaciones implements IControlConsultarCotizacion
         try {
             administradorCotizaciones.eliminarCotizacion(idCotizacion);
             buscarCotizaciones(null, null, null, "Todos");
-        } catch (BusinessException ex) {
+        } catch (Exception ex) {
             vistaHistorialCotizaciones.mostrarMensajeRapido("Error al deshabilitar la cotización");
         }
     }
@@ -124,7 +123,7 @@ public class ControlConsultarCotizaciones implements IControlConsultarCotizacion
         try {
             administradorCotizaciones.habilitarCotizacion(idCotizacion);
             buscarCotizaciones(null, null, null, "Todos");
-        } catch (BusinessException ex) {
+        } catch (Exception ex) {
             vistaHistorialCotizaciones.mostrarMensajeRapido("Error al habilitar la cotización");
         }
     }
@@ -139,7 +138,7 @@ public class ControlConsultarCotizaciones implements IControlConsultarCotizacion
             this.vistaConsultaCotizacion = FabricaVistas.obtenerVistaConsultarCotizacion(this);
             this.vistaConsultaCotizacion.cargarDetalleCotizacion(cotizacion);
             this.vistaConsultaCotizacion.mostrar();
-        } catch (BusinessException ex) {
+        } catch (Exception ex) {
             vistaHistorialCotizaciones.mostrarMensaje(ex.getMessage());
         }
     }
@@ -172,7 +171,7 @@ public class ControlConsultarCotizaciones implements IControlConsultarCotizacion
         try {
             List<SupplySummaryDTO> insumos = administradorInsumos.obtenerInsumosNombre(nombreInsumo);
             vistaConsultaCotizacion.actualizarSugerencias(insumos);
-        } catch (BusinessException e) {
+        } catch (Exception e) {
             vistaConsultaCotizacion.mostrarMensaje(e.getMessage());
         }
     }
@@ -187,7 +186,7 @@ public class ControlConsultarCotizaciones implements IControlConsultarCotizacion
                     vistaConsultaCotizacion.agregarInsumoTabla(insumo);
                 }
             }
-        } catch (BusinessException e) {
+        } catch (Exception e) {
             vistaConsultaCotizacion.mostrarMensaje(e.getMessage());
         }
     }
@@ -227,11 +226,10 @@ public class ControlConsultarCotizaciones implements IControlConsultarCotizacion
                 vistaConsultaCotizacion.mostrarMensajeExito();
             }
 
-        } catch (BusinessException ex) {
+        } catch (Exception ex) {
             vistaConsultaCotizacion.mostrarMensaje(ex.getMessage());
-        } catch (Exception e) {
             vistaConsultaCotizacion.mostrarMensaje("Ocurrió un error inesperado al actualizar.");
-            e.printStackTrace();
+            ex.printStackTrace();
         }
     }
 

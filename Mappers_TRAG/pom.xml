@@ -16,12 +16,12 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>CustomerAndVehicle_Persistence_TRAG</artifactId>
+            <artifactId>InventoryAndService_Persistence_TRAG</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>InventoryAndService_Persistence_TRAG</artifactId>
+            <artifactId>CustomerAndVehicle_Persistence_TRAG</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

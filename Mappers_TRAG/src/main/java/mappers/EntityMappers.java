@@ -9,6 +9,7 @@ import Entitys.Quote;
 import Entitys.QuoteSupply;
 import Entitys.Service;
 import Entitys.ServiceSupply;
+import Entitys.Supplier;
 import Entitys.Supply;
 import Entitys.Vehicle;
 import dtos.customer.CustomerDetailDTO;
@@ -16,9 +17,11 @@ import dtos.customer.CustomerSummaryDTO;
 import dtos.quote.QuoteDetailDTO;
 import dtos.quote.QuoteSummaryDTO;
 import dtos.quoteSupply.QuoteSupplyDetailDTO;
+import dtos.service.ServiceAddDTO;
 import dtos.service.ServiceDetailDTO;
 import dtos.service.ServiceSummaryDTO;
 import dtos.serviceSupply.ServiceSupplyDetailDTO;
+import dtos.supply.SupplyAddDTO;
 import dtos.supply.SupplyDetailDTO;
 import dtos.supply.SupplySummaryDTO;
 import dtos.vehicle.VehicleDetailDTO;
@@ -268,6 +271,64 @@ public class EntityMappers {
         );
         dto.setSubtotal(subtotal);
         return dto;
+    }
+
+
+    public static Supply toSupplyEntity(SupplyAddDTO dto) {
+        if (dto == null) {
+            return null;
+        }
+
+        Supply supply = new Supply();
+        supply.setName(dto.getName());
+
+        supply.setSuggestedCost(dto.getSuggestedPrice());
+
+        if (dto.getSupplierId() != null) {
+            Supplier supplier = new Supplier();
+            supplier.setId(dto.getSupplierId());
+            supply.setSupplier(supplier);
+        }
+
+        return supply;
+    }
+
+
+    public static Service toServiceEntity(ServiceAddDTO dto) {
+        if (dto == null) {
+            return null;
+        }
+
+        Service service = new Service();
+        service.setName(dto.getName());
+        service.setDescription(dto.getDescription());
+
+        service.setSuggestedLaborCost(dto.getSuggestedLaborPrice());
+        service.setIconRoute(dto.getIconPath());
+
+        service.setEnabled(true);
+
+        if (dto.getServiceSupplies() != null && !dto.getServiceSupplies().isEmpty()) {
+            List<ServiceSupply> suppliesList = dto.getServiceSupplies().stream()
+                    .map(supDto -> {
+                        ServiceSupply serviceSupply = new ServiceSupply();
+
+                        serviceSupply.setDefaultQuantity(supDto.getQuantityNeeded());
+
+                        Supply supplyReference = new Supply();
+                        supplyReference.setId(supDto.getSupplyId());
+                        serviceSupply.setSupply(supplyReference);
+
+                        serviceSupply.setService(service);
+
+                        return serviceSupply;
+                    })
+                    .collect(Collectors.toList());
+
+            service.setServiceSupplies(suppliesList);
+        }
+
+        return service;
     }
 
 }

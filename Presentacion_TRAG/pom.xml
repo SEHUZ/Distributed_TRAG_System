@@ -31,30 +31,12 @@
             <artifactId>BusinessDTO_TRAG</artifactId>
             <version>${project.version}</version>
         </dependency>
+        
+        
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>AdministradorCotizaciones_TRAG</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>InventoryAndServiceService_TRAG</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>QuoteService_TRAG</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>InventoryAndService_Persistence_TRAG</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>CustomerAndVehicleClient_TRAG</artifactId>
-            <version>${project.version}</version>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
         </dependency>
     </dependencies>
     

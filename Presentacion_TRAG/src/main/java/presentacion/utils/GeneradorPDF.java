@@ -6,6 +6,7 @@ import com.itextpdf.text.pdf.*;
 import dtos.quoteSupply.QuoteSupplyDetailDTO;
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -95,7 +96,7 @@ public class GeneradorPDF {
             celdaLogo.setBorder(Rectangle.NO_BORDER);
             celdaLogo.setHorizontalAlignment(Element.ALIGN_RIGHT);
             try {
-                java.net.URL urlLogo = GeneradorPDF.class.getResource("/logo_pdf.png");
+                URL urlLogo = GeneradorPDF.class.getResource("/logo_pdf.png");
 
                 if (urlLogo != null) {
                     Image logo = Image.getInstance(urlLogo);

@@ -1,13 +1,15 @@
-
 package presentacion.vistas;
 
-import dtos.vehicle.VehicleSummaryDTO; 
+import dtos.vehicle.VehicleSummaryDTO;
 import dtos.customer.CustomerSummaryDTO;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.util.List;
 import java.util.logging.Logger;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import presentacion.interfaces.IControlAgregarCotizacion;
 import presentacion.interfaces.vistas.IVistaSeleccionClienteAuto;
@@ -15,20 +17,20 @@ import presentacion.interfaces.vistas.IVistaSeleccionClienteAuto;
 /**
  *
  * Archivo: VistaSeleccionClienteAuto.java
- * 
+ *
  * @author Ariel Eduardo Borbón Izaguirre - 253080
  * @author Sebastián Bórquez Huerta - 253080
  * @author Chris Fitch Lopez - 252379
  * @author Yuri Germán García López - 253080
  * @author Manuel Romo López - 253080
- * 
+ *
  */
-public class VistaSeleccionClienteAuto extends JFrame implements IVistaSeleccionClienteAuto{
+public class VistaSeleccionClienteAuto extends JFrame implements IVistaSeleccionClienteAuto {
 
     private static final Logger LOG = Logger.getLogger(VistaSeleccionClienteAuto.class.getName());
-    
+
     private IControlAgregarCotizacion control;
-    
+
     /**
      * Creates new form VistaSeleccionClienteAuto
      */
@@ -36,12 +38,32 @@ public class VistaSeleccionClienteAuto extends JFrame implements IVistaSeleccion
         initComponents();
         this.control = control;
         btnContinuar.setEnabled(false);
-        
+
         setLocationRelativeTo(null);
-        
-        
+
+        cmbBoxAutomoviles.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof VehicleSummaryDTO vehiculo) {
+                    setText(vehiculo.getBrand() + " " + vehiculo.getModel() + " [" + vehiculo.getLicensePlate() + "]");
+                }
+                return this;
+            }
+        });
+
+        cmbBoxClientes.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof CustomerSummaryDTO cliente) {
+                    setText(cliente.getFirstName() + " " + cliente.getLastName() + " " + (cliente.getSecondLastName() != null ? cliente.getSecondLastName() : ""));
+                }
+                return this;
+            }
+        });
+
     }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -263,38 +285,38 @@ public class VistaSeleccionClienteAuto extends JFrame implements IVistaSeleccion
         seleccionarCliente();
     }//GEN-LAST:event_cmbBoxClientesActionPerformed
 
-    private void seleccionarCliente(){
+    private void seleccionarCliente() {
         CustomerSummaryDTO clienteSeleccionado = (CustomerSummaryDTO) cmbBoxClientes.getSelectedItem();
-        
-        if(clienteSeleccionado != null){
+
+        if (clienteSeleccionado != null) {
             Long idClienteSeleccionado = clienteSeleccionado.getId();
-            control.seleccionarCliente(idClienteSeleccionado);    
-        }    
+            control.seleccionarCliente(idClienteSeleccionado);
+        }
     }
-    
-    private void regresarSeleccionClienteAutomovil(){
-        
+
+    private void regresarSeleccionClienteAutomovil() {
+
         control.atrasPrincipal();
-        
+
     }
-    
-    private void seleccionarAutomovil(){
+
+    private void seleccionarAutomovil() {
         VehicleSummaryDTO automovilSeleccionado = (VehicleSummaryDTO) cmbBoxAutomoviles.getSelectedItem();
-        
-        if(automovilSeleccionado != null){
+
+        if (automovilSeleccionado != null) {
             control.seleccionarAutomovil(automovilSeleccionado);
             btnContinuar.setEnabled(true);
-        } else{
+        } else {
             btnContinuar.setEnabled(false);
         }
-        
+
     }
-    
-    private void continuar(){
-        
+
+    private void continuar() {
+
         control.seleccionarClienteAutomovil();
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Añadir;
     private javax.swing.JButton btnContinuar;
@@ -324,34 +346,33 @@ public class VistaSeleccionClienteAuto extends JFrame implements IVistaSeleccion
         cmbBoxAutomoviles.removeAllItems();
         automoviles.forEach(cmbBoxAutomoviles::addItem);
     }
-    
+
     public void cargarClientes(List<CustomerSummaryDTO> clientes, Long idClienteSeleccionado) {
         cmbBoxClientes.removeAllItems();
         clientes.forEach(cmbBoxClientes::addItem);
-        
-        if (idClienteSeleccionado != null) {
-        clientes.stream()
-            .filter(c -> c.getId().equals(idClienteSeleccionado))
-            .findFirst()
-            .ifPresent(cmbBoxClientes::setSelectedItem);
-        }
-        
-    }
 
+        if (idClienteSeleccionado != null) {
+            clientes.stream()
+                    .filter(c -> c.getId().equals(idClienteSeleccionado))
+                    .findFirst()
+                    .ifPresent(cmbBoxClientes::setSelectedItem);
+        }
+
+    }
 
     public void cargarAutosCliente(List<VehicleSummaryDTO> automoviles, Long idAutomovilSeleccionado) {
-        
+
         cmbBoxAutomoviles.removeAllItems();
         automoviles.forEach(cmbBoxAutomoviles::addItem);
-        
+
         if (idAutomovilSeleccionado != null) {
-        automoviles.stream()
-            .filter(a -> a.getId().equals(idAutomovilSeleccionado))
-            .findFirst()
-            .ifPresent(cmbBoxClientes::setSelectedItem);
+            automoviles.stream()
+                    .filter(a -> a.getId().equals(idAutomovilSeleccionado))
+                    .findFirst()
+                    .ifPresent(cmbBoxClientes::setSelectedItem);
         }
     }
-    
+
     @Override
     public void mostrarMensaje(String mensajeError) {
         JOptionPane.showMessageDialog(this, mensajeError, "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
@@ -366,6 +387,5 @@ public class VistaSeleccionClienteAuto extends JFrame implements IVistaSeleccion
     public void ocultar() {
         dispose();
     }
-
 
 }

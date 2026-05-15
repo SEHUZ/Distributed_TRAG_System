@@ -1,39 +1,37 @@
 package presentacion.controles;
 
-import Exception.BusinessException;
-import Interfaces.IAdministradorAutomoviles; // Corrección
-import Interfaces.IAdministradorClientes;    // Corrección
-import Interfaces.IAdministradorServicios;
-import Interfaces.IAdministradorInsumos;
-import com.mycompany.administradorcotizaciones_trag.IAdministradorCotizaciones;
 import dtos.customer.CustomerDetailDTO;
 import dtos.customer.CustomerSummaryDTO;
-import dtos.vehicle.VehicleSummaryDTO;
-import dtos.service.ServiceSummaryDTO;
-import dtos.service.ServiceDetailDTO;
-import dtos.supply.SupplySummaryDTO;
 import dtos.quote.QuoteAddDTO;
 import dtos.quote.QuoteDetailDTO;
 import dtos.quoteSupply.QuoteSupplyAddDTO;
-import dtos.quote.QuoteSummaryDTO;
-
+import dtos.service.ServiceDetailDTO;
+import dtos.service.ServiceSummaryDTO;
+import dtos.supply.SupplySummaryDTO;
+import dtos.vehicle.VehicleSummaryDTO;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.time.LocalDateTime;
-
-import presentacion.fabrica.FabricaNegocios;
-import presentacion.fabrica.FabricaVistas;
 import presentacion.borradores.BorradorAutomovil;
 import presentacion.borradores.BorradorCliente;
 import presentacion.borradores.BorradorCotizacion;
 import presentacion.borradores.BorradorInsumoCotizacion;
 import presentacion.borradores.BorradorServicio;
+import presentacion.fabrica.FabricaNegocios;
+import presentacion.fabrica.FabricaVistas;
 import presentacion.interfaces.IControlAgregarCotizacion;
 import presentacion.interfaces.IControlCotizaciones;
-import presentacion.interfaces.vistas.IVistaServicios;
+import presentacion.interfaces.backend.IAdministradorAutomoviles;
+import presentacion.interfaces.backend.IAdministradorClientes;
+import presentacion.interfaces.backend.IAdministradorCotizaciones;
+import presentacion.interfaces.backend.IAdministradorInsumos;
+import presentacion.interfaces.backend.IAdministradorServicios;
 import presentacion.interfaces.vistas.IVistaCrearCotizacion;
 import presentacion.interfaces.vistas.IVistaDiagnosticoEstado;
 import presentacion.interfaces.vistas.IVistaSeleccionClienteAuto;
+import presentacion.interfaces.vistas.IVistaServicios;
+
+
 
 
 /*
@@ -87,7 +85,7 @@ public class ControlAgregarCotizacion implements IControlAgregarCotizacion {
             List<CustomerSummaryDTO> clientes = administradorClientes.obtenerTodosClientes();
             vistaSeleccionClienteAuto.cargarClientes(clientes);
             vistaSeleccionClienteAuto.mostrar();
-        } catch (BusinessException e) {
+        } catch (Exception e) {
             vistaSeleccionClienteAuto.mostrarMensaje(e.getMessage());
         }
     }
@@ -113,7 +111,7 @@ public class ControlAgregarCotizacion implements IControlAgregarCotizacion {
                     clienteSeleccionado.getSecondLastName());
 
             vistaSeleccionClienteAuto.cargarAutosCliente(automovilesCliente);
-        } catch (BusinessException e) {
+        } catch (Exception e) {
             vistaSeleccionClienteAuto.mostrarMensaje(e.getMessage());
         }
     }
@@ -155,22 +153,24 @@ public class ControlAgregarCotizacion implements IControlAgregarCotizacion {
             vistaServicios.cargarServicios(servicios);
             vistaDiagnosticoEstado.ocultar();
             vistaServicios.mostrar();
-        } catch (BusinessException e) {
+        } catch (Exception e) {
             vistaDiagnosticoEstado.mostrarMensaje(e.getMessage());
         }
     }
 
-    @Override
+@Override
     public void atrasDiagnosticoEstado() {
         try {
             List<CustomerSummaryDTO> clientes = administradorClientes.obtenerTodosClientes();
             if (borradorCliente != null) {
-                vistaSeleccionClienteAuto.cargarClientes(clientes, borradorCliente.getId()); // error aqui "method cannot be applied to given types"
+                vistaSeleccionClienteAuto.cargarClientes(clientes); 
+                
                 CustomerDetailDTO clienteSeleccionado = administradorClientes.obtenerCliente(borradorCliente.getId());
-                List<VehicleSummaryDTO> automovilesCliente = clienteSeleccionado.getVehicles(); // Era getAutomoviles(), es getVehicles()
+                List<VehicleSummaryDTO> automovilesCliente = clienteSeleccionado.getVehicles(); 
                 vistaDiagnosticoEstado.ocultar();
+                
                 if (borradorAutomovil != null) {
-                    vistaSeleccionClienteAuto.cargarAutosCliente(automovilesCliente, borradorAutomovil.getId()); // error aqui "method cannot be applied to given types"
+                    vistaSeleccionClienteAuto.cargarAutosCliente(automovilesCliente); 
                 } else {
                     vistaSeleccionClienteAuto.cargarAutosCliente(automovilesCliente);
                 }
@@ -179,7 +179,7 @@ public class ControlAgregarCotizacion implements IControlAgregarCotizacion {
             }
             vistaSeleccionClienteAuto.mostrar();
 
-        } catch (BusinessException e) { 
+        } catch (Exception e) { 
             vistaSeleccionClienteAuto.mostrarMensaje(e.getMessage());
         }
     }
@@ -193,7 +193,7 @@ public class ControlAgregarCotizacion implements IControlAgregarCotizacion {
             vistaCrearCotizacion.cargarDetalleServicio(servicioSeleccionado);
             vistaServicios.ocultar();
             vistaCrearCotizacion.mostrar();
-        } catch (BusinessException e) {
+        } catch (Exception e) {
             vistaServicios.mostrarMensaje(e.getMessage());
         }
     }
@@ -205,7 +205,7 @@ public class ControlAgregarCotizacion implements IControlAgregarCotizacion {
             List<ServiceSummaryDTO> servicios = administradorSerivicios.obtenerServiciosNombre(nombreServicio);
             vistaServicios.cargarServicios(servicios);
 
-        } catch (BusinessException e) {
+        } catch (Exception e) {
             vistaServicios.mostrarMensaje(e.getMessage());
         }
 
@@ -234,7 +234,7 @@ public class ControlAgregarCotizacion implements IControlAgregarCotizacion {
         try {
             List<SupplySummaryDTO> insumos = administradorInsumos.obtenerInsumosNombre(nombreInsumo);
             vistaCrearCotizacion.actualizarSugerencias(insumos);
-        } catch (BusinessException e) {
+        } catch (Exception e) {
             vistaCrearCotizacion.mostrarMensaje(e.getMessage());
         }
     }
@@ -248,7 +248,7 @@ public class ControlAgregarCotizacion implements IControlAgregarCotizacion {
                     vistaCrearCotizacion.agregarInsumoTabla(insumo);
                 }
             }
-        } catch (BusinessException e) {
+        } catch (Exception e) {
             vistaCrearCotizacion.mostrarMensaje(e.getMessage());
         }
     }

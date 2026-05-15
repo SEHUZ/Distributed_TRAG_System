@@ -10,8 +10,10 @@ import Entitys.Service;
 import Entitys.Supply;
 import Exception.BusinessException;
 import Exception.PersistenceException;
+import dtos.service.ServiceAddDTO;
 import dtos.service.ServiceDetailDTO;
 import dtos.service.ServiceSummaryDTO;
+import dtos.supply.SupplyAddDTO;
 import dtos.supply.SupplySummaryDTO;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,8 +21,8 @@ import mappers.EntityMappers;
 
 /**
  *
- * @author chris / sebas
- * 
+ * @author chris / sebas / ariels
+ *
  */
 @org.springframework.stereotype.Service
 public class InventoryAndServiceManager {
@@ -48,7 +50,8 @@ public class InventoryAndServiceManager {
     }
 
     /**
-     * Returns the complete details of a service, including its associated supplies.
+     * Returns the complete details of a service, including its associated
+     * supplies.
      */
     public ServiceDetailDTO getService(Long id) throws BusinessException {
         if (id == null) {
@@ -66,7 +69,8 @@ public class InventoryAndServiceManager {
     }
 
     /**
-     * Searches for services whose name contains the given text (partial, case-insensitive search).
+     * Searches for services whose name contains the given text (partial,
+     * case-insensitive search).
      */
     public List<ServiceSummaryDTO> getServicesByName(String name) throws BusinessException {
         if (name == null || name.isBlank()) {
@@ -82,10 +86,9 @@ public class InventoryAndServiceManager {
         }
     }
 
-
-      /**
-     * Returns the details of a supply by its ID.
-     * Used by the gRPC implementation to respond to QuoteService.
+    /**
+     * Returns the details of a supply by its ID. Used by the gRPC
+     * implementation to respond to QuoteService.
      */
     public SupplySummaryDTO getSupply(Long id) throws BusinessException {
         if (id == null) {
@@ -118,4 +121,32 @@ public class InventoryAndServiceManager {
             throw new BusinessException("Error searching supplies by name.", e);
         }
     }
+
+    public SupplySummaryDTO addSupply(SupplyAddDTO dto) throws BusinessException {
+        if (dto == null) {
+            throw new BusinessException("Supply data is required.");
+        }
+        try {
+            Supply entity = EntityMappers.toSupplyEntity(dto);
+            Supply savedEntity = suppliesDAO.addSupply(entity);
+            return EntityMappers.toSupplySummaryDTO(savedEntity);
+        } catch (PersistenceException e) {
+            throw new BusinessException("Error saving the supply.", e);
+        }
+    }
+
+
+    public ServiceSummaryDTO addService(ServiceAddDTO dto) throws BusinessException {
+        if (dto == null) {
+            throw new BusinessException("Service data is required.");
+        }
+        try {
+            Service entity = EntityMappers.toServiceEntity(dto);
+            Service savedEntity = servicesDAO.addService(entity);
+            return EntityMappers.toServiceSummaryDTO(savedEntity);
+        } catch (PersistenceException e) {
+            throw new BusinessException("Error saving the service.", e);
+        }
+    }
+
 }

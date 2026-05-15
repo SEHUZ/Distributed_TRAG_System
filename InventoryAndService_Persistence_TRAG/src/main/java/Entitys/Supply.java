@@ -41,6 +41,13 @@ public class Supply implements Serializable {
     public Supply() {
     }
 
+    public Supply(String name, BigDecimal suggestedCost) {
+        this.name = name;
+        this.suggestedCost = suggestedCost;
+    }
+    
+    
+
     public Supply(Long id) {
         this.id = id;
     }

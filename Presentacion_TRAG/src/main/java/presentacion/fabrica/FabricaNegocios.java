@@ -4,16 +4,13 @@
  */
 package presentacion.fabrica;
 
-import Interfaces.IAdministradorAutomoviles;
-import Interfaces.IAdministradorClientes;
-import Interfaces.IAdministradorInsumos;
-import Interfaces.IAdministradorServicios;
-import com.mycompany.administradorcotizaciones_trag.IAdministradorCotizaciones;
-import com.mycompany.administradorcotizaciones_trag.FAdministradorCotizaciones;
-import com.mycompany.trag.customerandvehicleclient_trag.FAdministradorAutomoviles;
-import com.mycompany.trag.customerandvehicleclient_trag.FAdministradorClientes;
-import Facades.FAdministradorInsumos;
-import Facades.FAdministradorServicios;
+import presentacion.clienteshttp.ClienteHttpClientes;
+import presentacion.clienteshttp.ClienteHttpInventario;
+import presentacion.interfaces.backend.IAdministradorAutomoviles;
+import presentacion.interfaces.backend.IAdministradorClientes;
+import presentacion.interfaces.backend.IAdministradorCotizaciones;
+import presentacion.interfaces.backend.IAdministradorInsumos;
+import presentacion.interfaces.backend.IAdministradorServicios;
 
 /**
  *
@@ -22,22 +19,22 @@ import Facades.FAdministradorServicios;
 public class FabricaNegocios {
 
     public static IAdministradorClientes obtenerAdministradorClientes() {
-        return new FAdministradorClientes();
+        return new ClienteHttpClientes();
     }
 
     public static IAdministradorAutomoviles obtenerAdministradorAutomoviles() {
-        return new FAdministradorAutomoviles();
+        return null;
     }
 
     public static IAdministradorServicios obtenerAdministradorServicios() {
-        return new FAdministradorServicios();
+        return new ClienteHttpInventario();
     }
 
     public static IAdministradorCotizaciones obtenerAdministradorCotizaciones() {
-        return new FAdministradorCotizaciones();
+        return null;
     }
 
     public static IAdministradorInsumos obtenerAdministadorInsumos() {
-        return new FAdministradorInsumos();
+        return new ClienteHttpInventario();
     }
 }
