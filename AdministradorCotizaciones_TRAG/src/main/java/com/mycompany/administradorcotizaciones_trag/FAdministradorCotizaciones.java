@@ -88,4 +88,5 @@ public class FAdministradorCotizaciones implements IAdministradorCotizaciones {
     public QuoteDetailDTO habilitarCotizacion(Long idCotizacion) throws BusinessException {
         return administradorCotizaciones.habilitarCotizacion(idCotizacion);
     }
+
 }

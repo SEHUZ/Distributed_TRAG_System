@@ -84,8 +84,8 @@ public class ControlConsultarCotizaciones implements IControlConsultarCotizacion
 
                 lista = lista.stream()
                         .filter(c -> {
-                            
-                            if (c.getCreationDate() == null) { 
+
+                            if (c.getCreationDate() == null) {
                                 return false;
                             }
                             boolean cumpleInicio = (inicioAjustada == null) || !c.getCreationDate().isBefore(inicioAjustada);
@@ -101,7 +101,7 @@ public class ControlConsultarCotizaciones implements IControlConsultarCotizacion
                         .collect(Collectors.toList());
             }
 
-            vistaHistorialCotizaciones.mostrarCotizaciones(lista); 
+            vistaHistorialCotizaciones.mostrarCotizaciones(lista);
 
         } catch (Exception ex) {
             vistaHistorialCotizaciones.mostrarMensajeRapido("Error al filtrar: " + ex.getMessage());
@@ -170,18 +170,17 @@ public class ControlConsultarCotizaciones implements IControlConsultarCotizacion
     @Override
     public void buscarInsumosNombre(String nombreInsumo) {
         try {
-            List<SupplySummaryDTO> insumos = administradorInsumos.obtenerInsumosNombre(nombreInsumo);
+            List<SupplySummaryDTO> insumos = administradorInsumos.getSuppliesByName(nombreInsumo);
             vistaConsultaCotizacion.actualizarSugerencias(insumos);
         } catch (BusinessException e) {
             vistaConsultaCotizacion.mostrarMensaje(e.getMessage());
         }
     }
-    
 
     @Override
     public void agregarInsumo(String nombre) {
         try {
-            List<SupplySummaryDTO> insumos = administradorInsumos.obtenerInsumosNombre(nombre);
+            List<SupplySummaryDTO> insumos = administradorInsumos.getSuppliesByName(nombre);
             for (SupplySummaryDTO insumo : insumos) {
                 if (insumo.getName().equals(nombre)) {
                     vistaConsultaCotizacion.agregarInsumoTabla(insumo);
@@ -218,7 +217,7 @@ public class ControlConsultarCotizaciones implements IControlConsultarCotizacion
                     borradorCotizacion.getCostoManoObra(),
                     cotizacionExistente.getDiagnostic(), // error "cannot find symbol"
                     cotizacionExistente.getVehicleState(), // error "cannot find symbol"
-                    insumosCotizacion 
+                    insumosCotizacion
             );
 
             QuoteDetailDTO cotizacionActualizada = administradorCotizaciones.actualizarCotizacion(cotizacionActualizar);
@@ -241,7 +240,6 @@ public class ControlConsultarCotizaciones implements IControlConsultarCotizacion
         controlCotizaciones.administrarCotizaciones();
     }
 
-
     @Override
     public void seleccionarCotizacion(QuoteSummaryDTO cotizacion) {
         // Implementación requerida por la interfaz
@@ -262,4 +260,3 @@ public class ControlConsultarCotizaciones implements IControlConsultarCotizacion
         // Implementación requerida por la interfaz
     }
 }
-

@@ -80,6 +80,11 @@
             <artifactId>eclipselink</artifactId>
             <version>2.7.12</version> 
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>Quotes_Persistence_TRAG</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

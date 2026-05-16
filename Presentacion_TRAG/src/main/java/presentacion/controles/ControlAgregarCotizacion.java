@@ -1,8 +1,8 @@
 package presentacion.controles;
 
 import Exception.BusinessException;
-import Interfaces.IAdministradorAutomoviles; // Corrección
-import Interfaces.IAdministradorClientes;    // Corrección
+import Interfaces.IAdministradorAutomoviles;
+import Interfaces.IAdministradorClientes;
 import Interfaces.IAdministradorServicios;
 import Interfaces.IAdministradorInsumos;
 import com.mycompany.administradorcotizaciones_trag.IAdministradorCotizaciones;
@@ -151,7 +151,7 @@ public class ControlAgregarCotizacion implements IControlAgregarCotizacion {
         borradorEstado = estado;
         vistaServicios = FabricaVistas.obtenerVistaServicios(this);
         try {
-            List<ServiceSummaryDTO> servicios = administradorSerivicios.obtenerTodosServicios();
+            List<ServiceSummaryDTO> servicios = administradorSerivicios.getAllServices();
             vistaServicios.cargarServicios(servicios);
             vistaDiagnosticoEstado.ocultar();
             vistaServicios.mostrar();
@@ -179,7 +179,7 @@ public class ControlAgregarCotizacion implements IControlAgregarCotizacion {
             }
             vistaSeleccionClienteAuto.mostrar();
 
-        } catch (BusinessException e) { 
+        } catch (BusinessException e) {
             vistaSeleccionClienteAuto.mostrarMensaje(e.getMessage());
         }
     }
@@ -189,7 +189,7 @@ public class ControlAgregarCotizacion implements IControlAgregarCotizacion {
         borradorServicio = new BorradorServicio(servicio.getId(), servicio.getName());
         vistaCrearCotizacion = FabricaVistas.obtenerVistaCrearCotizacion(this);
         try {
-            ServiceDetailDTO servicioSeleccionado = administradorSerivicios.obtenerServicio(servicio.getId());
+            ServiceDetailDTO servicioSeleccionado = administradorSerivicios.getService(servicio.getId());
             vistaCrearCotizacion.cargarDetalleServicio(servicioSeleccionado);
             vistaServicios.ocultar();
             vistaCrearCotizacion.mostrar();
@@ -202,7 +202,7 @@ public class ControlAgregarCotizacion implements IControlAgregarCotizacion {
     public void buscarServicio(String nombreServicio) {
 
         try {
-            List<ServiceSummaryDTO> servicios = administradorSerivicios.obtenerServiciosNombre(nombreServicio);
+            List<ServiceSummaryDTO> servicios = administradorSerivicios.getServicesByName(nombreServicio);
             vistaServicios.cargarServicios(servicios);
 
         } catch (BusinessException e) {
@@ -232,7 +232,7 @@ public class ControlAgregarCotizacion implements IControlAgregarCotizacion {
     @Override
     public void buscarInsumosNombre(String nombreInsumo) {
         try {
-            List<SupplySummaryDTO> insumos = administradorInsumos.obtenerInsumosNombre(nombreInsumo);
+            List<SupplySummaryDTO> insumos = administradorInsumos.getSuppliesByName(nombreInsumo);
             vistaCrearCotizacion.actualizarSugerencias(insumos);
         } catch (BusinessException e) {
             vistaCrearCotizacion.mostrarMensaje(e.getMessage());
@@ -242,7 +242,7 @@ public class ControlAgregarCotizacion implements IControlAgregarCotizacion {
     @Override
     public void agregarInsumo(String nombre) {
         try {
-            List<SupplySummaryDTO> insumos = administradorInsumos.obtenerInsumosNombre(nombre);
+            List<SupplySummaryDTO> insumos = administradorInsumos.getSuppliesByName(nombre);
             for (SupplySummaryDTO insumo : insumos) {
                 if (insumo.getName().equals(nombre)) {
                     vistaCrearCotizacion.agregarInsumoTabla(insumo);
@@ -274,9 +274,9 @@ public class ControlAgregarCotizacion implements IControlAgregarCotizacion {
                 borradorAutomovil.getId());
 
         try {
-            QuoteDetailDTO quoteSaved = administradorCotizaciones.crearCotizacion(quoteAddDTO); 
+            QuoteDetailDTO quoteSaved = administradorCotizaciones.crearCotizacion(quoteAddDTO);
             if (quoteSaved != null) {
-                vistaCrearCotizacion.mostrarCotizacionExito(quoteSaved); 
+                vistaCrearCotizacion.mostrarCotizacionExito(quoteSaved);
             }
         } catch (Exception e) {
             vistaCrearCotizacion.mostrarMensaje("Error al crear: " + e.getMessage());
