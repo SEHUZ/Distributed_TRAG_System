@@ -37,21 +37,21 @@ public class AuthManager {
 
     public String generateToken(String username, String role) {
         return Jwts.builder()
-                .subject(username)
+                .setSubject(username)
                 .claim("role", role)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(key)
                 .compact();
     }
 
     public Claims validateToken(String token) {
         try {
-            return Jwts.parser()
-                    .verifyWith(key)
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
                     .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
+                    .parseClaimsJws(token)
+                    .getBody();
         } catch (Exception e) {
             return null;
         }
